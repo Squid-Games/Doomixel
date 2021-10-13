@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea900203e1d964042b99e2fb8b7fa3af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerObject: {fileID: 0}
+  playerObject: {fileID: 550635653}
 --- !u!4 &323171685
 Transform:
   m_ObjectHideFlags: 0
@@ -245,6 +245,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mouseSensivity: 300
   movementSpeed: 10
+  timeToShootBullet: 0.1
+  bulletSpeed: 25
+  bulletsPrefab: {fileID: 356066739564174031, guid: f4853425db9e1c840a94a42de2963db8, type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,7 +488,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

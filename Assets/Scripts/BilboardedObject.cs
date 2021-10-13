@@ -14,7 +14,11 @@ public class BilboardedObject : MonoBehaviour
     void Update()
     {
         var playerTransform = _playerObject.transform;
-        var direction = new Vector2(playerTransform.position.x - transform.position.x, playerTransform.position.z - transform.position.z);
-        transform.eulerAngles = new Vector3(transform.localEulerAngles.x, Mathf.Rad2Deg * Mathf.Atan2(direction.x, direction.y), transform.localEulerAngles.z);
+        
+        var direction = new Vector2(playerTransform.position.x, playerTransform.position.z) - 
+            new Vector2(transform.position.x, transform.position.z);
+
+        transform.eulerAngles = new Vector3(transform.localEulerAngles.x, 
+            Mathf.Rad2Deg * Mathf.Atan2(direction.x, direction.y), transform.localEulerAngles.z);
     }
 }
