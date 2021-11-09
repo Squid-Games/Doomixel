@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     private Collider _collider;
     private float _accumulatedShootTime;
 
+    public float lifes = 5;
+
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
