@@ -4,10 +4,27 @@ public class PlayerController : MonoBehaviour
 {
     private const float MIN_MOVEMENT_BIAS = 0.01f;
 
+    struct BulletProprieties
+    {
+
+        public float bullet_Speed;
+        public float timeToShoot_Bullet;
+        public Material material_Bullet;
+
+        public BulletProprieties(float bulletSpeed, float timeToShootBullet, Material materialBullet)
+        {
+            this.bullet_Speed = bulletSpeed;
+            this.timeToShoot_Bullet = timeToShootBullet;
+            this.material_Bullet = materialBullet;
+        }
+    }
+
+
     public float mouseSensivity = 300.0f;
     public float movementSpeed = 10.0f;
     public float timeToShootBullet = 0.1f;
     public float bulletSpeed = 25.0f;
+    public Material selected;
 
     public GameObject bulletsPrefab;
 
@@ -19,7 +36,13 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();
+        BulletProprieties slot1 = new BulletProprieties(25.0f, 0.1f, Resources.Load<Material>("Materials/Bullets"));
+        selected = slot1.material_Bullet;
+        timeToShootBullet = slot1.timeToShoot_Bullet;
+        bulletSpeed = slot1.bullet_Speed;//update
+
+
+    _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -69,6 +92,8 @@ public class PlayerController : MonoBehaviour
         if (bulletsPrefab is null)
             return;
 
+        bulletsPrefab.GetComponent<MeshRenderer>().material = selected;
+
         var bullets = Instantiate(bulletsPrefab, transform.position, Quaternion.identity);
         Physics.IgnoreCollision(bullets.GetComponent<Collider>(), _collider);
         bullets.GetComponent<Bullets>().velocity = GetCurrentAngleAxis() * Vector3.forward * bulletSpeed;
@@ -78,4 +103,7 @@ public class PlayerController : MonoBehaviour
     {
         return Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
     }
+
+
+    
 }
