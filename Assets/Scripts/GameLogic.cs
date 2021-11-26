@@ -22,14 +22,28 @@ struct Vector2Int
     public int z;
 }
 
+struct RoomTile
+{
+    public Vector2Int Position { get; set; }
+    public GameObject Floor { get; set; }
+    public List<GameObject> Walls { get; set; }
+    public GameObject Ceiling { get; set; }
+}
+
 public class GameLogic : MonoBehaviour
 {
     public GameObject playerObject;
     public GameObject floorPrefab;
+    public GameObject wallPrefab;
+    public GameObject ceilingPrefab;
 
     public int        minTilesRoom;
     public int        minRoomRectangleWidth;
     public int        maxRoomRectangleWidth;
+
+    public float      roomTileScale = 1.0f;
+
+    List<RoomTile>    _roomTiles;
 
     void Start()
     {
@@ -50,6 +64,8 @@ public class GameLogic : MonoBehaviour
 
     private void CreateRoom()
     {
+        _roomTiles = new List<RoomTile>();
+
         HashSet<Vector2Int> chosenTiles = new HashSet<Vector2Int>();
 
         while (chosenTiles.Count < minTilesRoom)
@@ -91,7 +107,57 @@ public class GameLogic : MonoBehaviour
         foreach (var tile in chosenTiles)
         {
             var floor = Instantiate(floorPrefab);
-            floor.transform.position = new Vector3(tile.x * 10.0f * floor.transform.localScale.x, 0.0f, tile.z * 10.0f * floor.transform.localScale.z);
+            floor.transform.position = new Vector3(tile.x * 10.0f * roomTileScale, 0.0f, tile.z * 10.0f * roomTileScale);
+            floor.transform.localScale = new Vector3(roomTileScale, 1.0f, roomTileScale);
+
+            
+            var ceiling = Instantiate(ceilingPrefab);
+            ceiling.transform.position = new Vector3(floor.transform.position.x, 0.0f, floor.transform.position.z);
+            
+            var actualCeiling = ceiling.transform.GetChild(0);
+            actualCeiling.transform.localScale = new Vector3(roomTileScale, 1.0f, roomTileScale);
+            actualCeiling.transform.localPosition = new Vector3(actualCeiling.transform.localPosition.x, 
+                actualCeiling.transform.localPosition.y * roomTileScale, 
+                actualCeiling.transform.localPosition.z);
+
+            var roomTile = new RoomTile()
+            {
+                Position = tile,
+                Floor = floor,
+                Walls = new List<GameObject>(),
+                Ceiling = ceiling
+            };
+
+            _roomTiles.Add(roomTile);
+        }
+
+        AddWalls(chosenTiles);
+    }
+
+    private void AddWalls(HashSet<Vector2Int> chosenTiles)
+    {
+        foreach (var tile in _roomTiles)
+        {
+            int[] dx = { 0, -1, 0, 1 };
+            int[] dz = { -1, 0, 1, 0 };
+            for (int i = 0; i < dx.Length; i++)
+            {
+                Vector2Int nextPos = tile.Position + new Vector2Int(dx[i], dz[i]);
+                if (!chosenTiles.Contains(nextPos))
+                {
+                    var wallObject = Instantiate(wallPrefab);
+                    wallObject.transform.position = tile.Floor.transform.position;
+                    wallObject.transform.rotation = Quaternion.Euler(0.0f, i * 90.0f, 0.0f);
+
+                    var actualWall = wallObject.transform.GetChild(0);
+                    actualWall.transform.localScale = new Vector3(roomTileScale, 1.0f, roomTileScale);
+                    actualWall.transform.localPosition = new Vector3(actualWall.transform.localPosition.x,
+                        actualWall.transform.localPosition.y * roomTileScale,
+                        actualWall.transform.localPosition.z * roomTileScale);
+
+                    tile.Walls.Add(wallObject);
+                }
+            }
         }
     }
 }
