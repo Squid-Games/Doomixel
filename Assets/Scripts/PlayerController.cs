@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     private Collider _collider;
     private float _accumulatedShootTime;
 
-    public float lifes = 5;
+    public float lives = 5;
 
     void Start()
     {
@@ -78,4 +78,13 @@ public class PlayerController : MonoBehaviour
     {
         return Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
     }
+
+	void DecreaseLife()
+	{
+		this.lives -= 1;
+		if(this.lives<=0){
+			/// TODO: Game over
+		}
+			
+	}
 }
