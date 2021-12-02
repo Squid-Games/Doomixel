@@ -4,25 +4,21 @@ using UnityEngine.UI;
 public class PlayerLifes : MonoBehaviour
 {
     public Image[] hearts;
-    public int life;
     public Sprite fullHeart;
     public Sprite emptyHeart;
+
+	private PlayerController _playerController;
+	
+	void Start()
+	{
+		this._playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+	}
 
     void Update()
     {
         for (int i = 0; i < hearts.Length; i++)
         {
-            hearts[i].enabled = i < life;
+            hearts[i].enabled = i < this._playerController.lives;
         }
-    }
-
-    void UpdatePlayerLife(int life)
-    {
-        this.life = life;
-    }
-    
-    void DecreasePlayerLife(int life)
-    {
-        this.life--;
     }
 }

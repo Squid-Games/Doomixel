@@ -17,8 +17,7 @@ public class HumanConfig : MonoBehaviour
         this.gameObject.GetComponent<MeshFilter>().mesh = quad;
 
         this.gameObject.AddComponent<MeshRenderer>();
-        this.gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/choomba4");
-        ;
+        this.gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/choomba4"); ;
 
         this.gameObject.AddComponent<MeshCollider>();
         this.gameObject.GetComponent<MeshCollider>().convex = true;
