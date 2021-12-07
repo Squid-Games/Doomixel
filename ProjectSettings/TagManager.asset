@@ -7,6 +7,7 @@ TagManager:
   - Bullets
   - Enemies
   - Lifes
+  - Human
   layers:
   - Default
   - TransparentFX
