@@ -4,30 +4,29 @@ using UnityEngine.UI;
 public class Killable : MonoBehaviour
 {
 
-	public int life;
-	public Sprite fullHeart;
-    public Sprite emptyHeart;
-	public Image[] hearts;
+	public int lives;
+	private const int maxLives = 3;
+	private GameObject human;
 
     void Start()
     {
-		
-    }
-
-    void Update()
-    {
-		for (int i = 0; i < hearts.Length; i++)
-        {
-            hearts[i].enabled = i < life;
-        }
+		this.lives = maxLives;
+		this.human = GameObject.FindGameObjectWithTag("Human");
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Bullets"){
-			this.life--;
-			if(this.life<=0)
-				Destroy(gameObject);
-		}
+        if (collision.gameObject.tag == "Bullets")
+	        this.DecreaseLife();
+    }
+
+    void DecreaseLife()
+    {
+	    this.human.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1, (1.0f / (float)maxLives) * (float)this.lives);
+	    this.lives--;
+	    if(this.lives<=0){
+		    Destroy(gameObject);
+		    return;
+	    }
     }
 }
