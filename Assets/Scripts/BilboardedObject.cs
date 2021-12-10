@@ -13,6 +13,7 @@ public class BilboardedObject : MonoBehaviour
 
     void Update()
     {
+        /*
         var playerTransform = _playerObject.transform;
         
         var direction = new Vector2(playerTransform.position.x, playerTransform.position.z) - 
@@ -20,5 +21,8 @@ public class BilboardedObject : MonoBehaviour
 
         transform.eulerAngles = new Vector3(transform.localEulerAngles.x, 
             Mathf.Rad2Deg * Mathf.Atan2(direction.x, direction.y), transform.localEulerAngles.z);
+        */
+
+        transform.forward = -_playerObject.transform.forward;
     }
 }
