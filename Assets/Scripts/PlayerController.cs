@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour
         var bullets = Instantiate(bulletsPrefab, transform.position, Quaternion.identity);
         Physics.IgnoreCollision(bullets.GetComponent<Collider>(), _collider);
         bullets.GetComponent<Bullets>().velocity = GetCurrentAngleAxis() * Vector3.forward * bulletSpeed;
+        bullets.GetComponent<MeshRenderer>().material = Control.selected_bullet.GetMaterial();
     }
 
     private Quaternion GetCurrentAngleAxis()
