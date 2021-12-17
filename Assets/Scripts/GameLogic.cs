@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 struct Vector2Int
 {
@@ -79,7 +80,13 @@ public class GameLogic : MonoBehaviour
 
         if (_roomsList.Last().Door.transform.GetComponentInChildren<Door>().open && _roomsList.Count < MAX_ROOMS_IN_QUEUE)
             _roomsList.AddLast(CreateRoom(_roomsList.Last()));
-
+        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("Back to main menu");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        }
+        
         UpdateCurrentRoom();
     }
 
