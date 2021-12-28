@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
 struct Vector2Int
@@ -51,6 +52,8 @@ public class GameLogic : MonoBehaviour
                               
     public        GameObject  doorPrefab;
     public        GameObject  closedDoorPrefab;
+    
+    public        NavMeshSurface    navMeshSurface;
                               
     public        int         minTilesRoom;
     public        int         minRoomRectangleWidth;
@@ -59,7 +62,7 @@ public class GameLogic : MonoBehaviour
     public        float       roomTileScale = 1.0f;
     public        float       panelSize = 10.0f;
                   
-    private       LinkedList<Room> _roomsList;
+    private       LinkedList<Room>  _roomsList;
     private       Room       _currentRoom;
 
     void Start()
@@ -231,6 +234,8 @@ public class GameLogic : MonoBehaviour
         }
 
         AddWalls(chosenTiles, result, previousRoom);
+        // update the navMeshSurface
+        navMeshSurface.BuildNavMesh();
 
         return result;
     }

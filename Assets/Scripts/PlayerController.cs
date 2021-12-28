@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
         return Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
     }
 
-	void DecreaseLife()
+	public void DecreaseLife()
 	{
 		this.lives -= 1;
 		if(this.lives<=0){
