@@ -33,6 +33,9 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButton("Fire1"))
         {
+
+            SoundManagerScript.PlaySound("gunshot");
+
             _accumulatedShootTime += Time.deltaTime;
 
             while (_accumulatedShootTime >= timeToShootBullet)
@@ -57,7 +60,7 @@ public class PlayerController : MonoBehaviour
             _rigidbody.velocity = Vector3.zero;
             return;
         }
-        
+
         var rotatedVector = GetCurrentAngleAxis() * inputVector;
 
         _rigidbody.velocity = rotatedVector * movementSpeed;
@@ -80,12 +83,13 @@ public class PlayerController : MonoBehaviour
         return Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
     }
 
-	public void DecreaseLife()
-	{
-		this.lives -= 1;
-		if(this.lives<=0){
-			/// TODO: Game over
-		}
-			
-	}
+    public void DecreaseLife()
+    {
+        this.lives -= 1;
+        if (this.lives <= 0)
+        {
+            /// TODO: Game over
+        }
+
+    }
 }
