@@ -27,6 +27,7 @@ public class Killable : MonoBehaviour
         if (this.lives <= 0)
         {
             SoundManagerScript.PlaySound("death");
+            ScoreScript.AddScore();
             Destroy(gameObject);
             return;
         }

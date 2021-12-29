@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
 
     public float lives = 5;
 
+    public int boolStart = 0;
+
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -33,7 +35,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButton("Fire1"))
         {
-
+            boolStart = 1;
             SoundManagerScript.PlaySound("gunshot");
 
             _accumulatedShootTime += Time.deltaTime;
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour
                 _accumulatedShootTime -= timeToShootBullet;
             }
         }
+
     }
 
     void FixedUpdate()
@@ -81,6 +84,12 @@ public class PlayerController : MonoBehaviour
     private Quaternion GetCurrentAngleAxis()
     {
         return Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
+    }
+
+    public int StartTimer()
+    {
+        if (boolStart == 0) return 0;
+        else return 1;
     }
 
     public void DecreaseLife()
