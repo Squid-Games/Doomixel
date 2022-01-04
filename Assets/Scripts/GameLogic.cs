@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
+
+using Random = UnityEngine.Random;
 
 struct Vector2Int
 {
@@ -37,6 +40,7 @@ class Room
 {
     public List<RoomTile> RoomTiles { get; set; }
     public GameObject ClosedDoor { get; set; }
+    public Vector2Int? ClosedNextTilePosition { get; set; }
     public GameObject Door { get; set; }
     public Vector2Int NextTilePosition { get; set; }
     public Vector2Int DoorPosition { get; set; }
@@ -105,14 +109,15 @@ public class GameLogic : MonoBehaviour
             Vector3 currentPlayerTile = new Vector3((playerObject.transform.position.x) / (panelSize * roomTileScale), 
                 0.0f,
                 (playerObject.transform.position.z) / (panelSize * roomTileScale));
-            Vector2Int playerTilePos = new Vector2Int((int)currentPlayerTile.x, (int)currentPlayerTile.z);
+            Vector2Int playerTilePos = new Vector2Int((int)Math.Round(currentPlayerTile.x), (int)Math.Round(currentPlayerTile.z));
             foreach (var tile in nextRoom.RoomTiles)
             {
-                if (playerTilePos.x == tile.Position.x &&
-                    playerTilePos.z == tile.Position.z &&
-                    tile.Position.x != _currentRoom.NextTilePosition.x &&
-                    tile.Position.z != _currentRoom.NextTilePosition.z)
-                    changeRoom = true;
+                if (nextRoom.ClosedNextTilePosition.HasValue)
+                    if (playerTilePos.x == tile.Position.x &&
+                        playerTilePos.z == tile.Position.z &&
+                        tile.Position.x == nextRoom.ClosedNextTilePosition.Value.x &&
+                        tile.Position.z == nextRoom.ClosedNextTilePosition.Value.z)
+                        changeRoom = true;
             }
 
             if (changeRoom)
@@ -246,6 +251,7 @@ public class GameLogic : MonoBehaviour
         List<Vector2Int> addedWallsPositions = new List<Vector2Int>();
 
         room.ClosedDoor = null;
+        room.ClosedNextTilePosition = null;
 
         foreach (var tile in room.RoomTiles)
         {
@@ -285,6 +291,7 @@ public class GameLogic : MonoBehaviour
                     if (closedDoor)
                     {
                         room.ClosedDoor = wallObject;
+                        room.ClosedNextTilePosition = tile.Position;
                         actualWall.transform.localPosition = actualWall.transform.localPosition + new Vector3(0.0f, panelSize * roomTileScale * 2.0f, 0.0f);
                         actualWall.GetComponent<ClosedDoor>().panelSize = panelSize;
                         actualWall.GetComponent<ClosedDoor>().tileScale = roomTileScale;
@@ -310,7 +317,7 @@ public class GameLogic : MonoBehaviour
             validDoor = true;
 
             foreach (var gameRoom in _roomsList)
-                if (gameRoom.RoomTiles.FindAll(x => x.Position.x == chosenWallPosition.x && x.Position.z == chosenWallPosition.z).Count > 0)
+                if (gameRoom.RoomTiles.FindAll(x => x.Position.x == chosenWallPosition.x && x.Position.z == chosenWallPosition.z).Count > 0) // TODO: Lee algo here to see if valid place + no rectangles clipping above, keep only full rectangles
                     validDoor = false;
         }
 

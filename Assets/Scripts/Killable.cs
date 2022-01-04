@@ -11,7 +11,7 @@ public class Killable : MonoBehaviour
     void Start()
     {
         this.lives = maxLives;
-        this.human = GameObject.FindGameObjectWithTag("Human");
+        this.human = this.gameObject; 
     }
 
     void OnCollisionEnter(Collision collision)
