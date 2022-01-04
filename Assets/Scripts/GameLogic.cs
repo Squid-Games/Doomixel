@@ -68,6 +68,8 @@ public class GameLogic : MonoBehaviour
                   
     private       LinkedList<Room>  _roomsList;
     private       Room       _currentRoom;
+    public bool gamePaused = false;
+    public GameObject pauseMenuComponent;
 
     void Start()
     {
@@ -79,6 +81,15 @@ public class GameLogic : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (this.gamePaused)
+                this.ContinueGame();
+            else
+                this.PauseGame();
+            return;
+        }
+        
         if (playerObject is null)
             AssignPlayer();
 
@@ -87,14 +98,26 @@ public class GameLogic : MonoBehaviour
 
         if (_roomsList.Last().Door.transform.GetComponentInChildren<Door>().open && _roomsList.Count < MAX_ROOMS_IN_QUEUE)
             _roomsList.AddLast(CreateRoom(_roomsList.Last()));
-        
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Debug.Log("Back to main menu");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
-        }
-        
+
         UpdateCurrentRoom();
+    }
+    
+    public void PauseGame()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        this.gamePaused = true;
+        this.pauseMenuComponent.SetActive(true);
+    }
+
+    public void ContinueGame()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        this.gamePaused = false;
+        this.pauseMenuComponent.SetActive(false);
+    }
+    
+    public void ExitGame(){
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 
     private void UpdateCurrentRoom()

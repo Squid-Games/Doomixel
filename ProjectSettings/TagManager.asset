@@ -8,6 +8,7 @@ TagManager:
   - Enemies
   - Lifes
   - Human
+  - PauseMenu
   layers:
   - Default
   - TransparentFX
