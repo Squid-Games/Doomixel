@@ -138,8 +138,8 @@ public class GameLogic : MonoBehaviour
                 if (nextRoom.ClosedNextTilePosition.HasValue)
                     if (playerTilePos.x == tile.Position.x &&
                         playerTilePos.z == tile.Position.z &&
-                        tile.Position.x == nextRoom.ClosedNextTilePosition.Value.x &&
-                        tile.Position.z == nextRoom.ClosedNextTilePosition.Value.z)
+                        tile.Position.x != nextRoom.ClosedNextTilePosition.Value.x &&
+                        tile.Position.z != nextRoom.ClosedNextTilePosition.Value.z)
                         changeRoom = true;
             }
 
@@ -207,25 +207,31 @@ public class GameLogic : MonoBehaviour
                 topRight = new Vector2Int(topRight.x, topRight.z - pointsDifference.z);
             }
 
-            for (int x = origin.x; x <= topRight.x; x++)
+            bool canAddRectangle = true;
+            if (previousRoom != null)
             {
-                for (int z = origin.z; z <= topRight.z; z++)
+                for (int x = origin.x; x <= topRight.x; x++)
                 {
-                    Vector2Int newPoint = new Vector2Int(x, z);
-                    if (!chosenTiles.Contains(newPoint))
+                    for (int z = origin.z; z <= topRight.z; z++)
                     {
-                        bool canAdd = false;
-                        if (previousRoom == null)
-                            canAdd = true;
-                        else
+                        Vector2Int newPoint = new Vector2Int(x, z);
+                        if (!chosenTiles.Contains(newPoint))
                         {
-                            canAdd = true;
-
                             foreach (var room in _roomsList)
                                 if (room.RoomTiles.FindAll(x => x.Position.x == newPoint.x && x.Position.z == newPoint.z).Count > 0)
-                                    canAdd = false;
+                                    canAddRectangle = false;
                         }
-                        if (canAdd)
+                    }
+                }
+            }
+            if (canAddRectangle)
+            {
+                for (int x = origin.x; x <= topRight.x; x++)
+                {
+                    for (int z = origin.z; z <= topRight.z; z++)
+                    {
+                        Vector2Int newPoint = new Vector2Int(x, z);
+                        if (!chosenTiles.Contains(newPoint))
                             chosenTiles.Add(newPoint);
                     }
                 }
@@ -266,6 +272,46 @@ public class GameLogic : MonoBehaviour
         navMeshSurface.BuildNavMesh();
 
         return result;
+    }
+
+    private bool Lee(Vector2Int nextDoorPosition)
+    {
+        Queue<Vector2Int>   testPositions  = new Queue<Vector2Int>();
+        HashSet<Vector2Int> goodPositions  = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> triedPositions = new HashSet<Vector2Int>();
+
+        testPositions.Enqueue(nextDoorPosition);
+        triedPositions.Add(nextDoorPosition);
+
+        while (testPositions.Count > 0 && goodPositions.Count < minTilesRoom)
+        {
+            bool goodTile = true;
+            var currentPosition = testPositions.Dequeue();
+
+            foreach (var gameRoom in _roomsList)
+                if (gameRoom.RoomTiles.Any(x => x.Position.x == currentPosition.x && x.Position.z == currentPosition.z))
+                    goodTile = false;
+
+            if (goodTile)
+            {
+                goodPositions.Add(currentPosition);
+
+                int[] dx = { 0, -1, 0, 1 };
+                int[] dz = { -1, 0, 1, 0 };
+
+                for (int i = 0; i < dx.Length; i++)
+                {
+                    Vector2Int nextPos = currentPosition + new Vector2Int(dx[i], dz[i]);
+                    if (!triedPositions.Contains(nextPos))
+                    {
+                        testPositions.Enqueue(nextPos);
+                        triedPositions.Add(nextPos);
+                    }
+                }
+            }
+        }
+
+        return goodPositions.Count >= minTilesRoom;
     }
 
     private void AddWalls(HashSet<Vector2Int> chosenTiles, Room room, Room previousRoom)
@@ -331,17 +377,14 @@ public class GameLogic : MonoBehaviour
         int index = Random.Range(0, addedWalls.Count);
         var chosenWall = addedWalls[index];
         var chosenWallPosition = addedWallsPositions[index];
-        bool validDoor = false;
+        bool validDoor = Lee(chosenWallPosition);
+
         while (chosenWall == room.ClosedDoor || !validDoor)
         {
             index = Random.Range(0, addedWalls.Count); 
             chosenWall = addedWalls[index];
             chosenWallPosition = addedWallsPositions[index];
-            validDoor = true;
-
-            foreach (var gameRoom in _roomsList)
-                if (gameRoom.RoomTiles.FindAll(x => x.Position.x == chosenWallPosition.x && x.Position.z == chosenWallPosition.z).Count > 0) // TODO: Lee algo here to see if valid place + no rectangles clipping above, keep only full rectangles
-                    validDoor = false;
+            validDoor = Lee(chosenWallPosition);
         }
 
         foreach (var tile in room.RoomTiles)
