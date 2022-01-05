@@ -39,13 +39,13 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButton("Fire1"))
         {
             boolStart = 1;
-            SoundManagerScript.PlaySound("gunshot");
 
             _accumulatedShootTime += Time.deltaTime;
 
             while (_accumulatedShootTime >= timeToShootBullet)
             {
                 SpawnBullet();
+                SoundManagerScript.PlaySound("gunshot");
                 _accumulatedShootTime -= timeToShootBullet;
             }
         }

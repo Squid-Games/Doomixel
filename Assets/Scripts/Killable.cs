@@ -14,9 +14,9 @@ public class Killable : MonoBehaviour
         this.human = this.gameObject; 
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.tag == "Bullets")
+        if (other.gameObject.CompareTag("Bullets"))
             this.DecreaseLife();
     }
 

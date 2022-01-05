@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,32 +44,44 @@ class Room
     public GameObject Door { get; set; }
     public Vector2Int NextTilePosition { get; set; }
     public Vector2Int DoorPosition { get; set; }
+    public List<GameObject> Enemies { get; set; }
 }
 
 public class GameLogic : MonoBehaviour
 {
-    private const int         MAX_ROOMS_IN_QUEUE = 3;
-    public        GameObject  playerObject;
-    public        GameObject  floorPrefab;
-    public        GameObject  wallPrefab;
-    public        GameObject  ceilingPrefab;
-                              
-    public        GameObject  doorPrefab;
-    public        GameObject  closedDoorPrefab;
-    
-    public        NavMeshSurface    navMeshSurface;
-                              
-    public        int         minTilesRoom;
-    public        int         minRoomRectangleWidth;
-    public        int         maxRoomRectangleWidth;
-                              
-    public        float       roomTileScale = 1.0f;
-    public        float       panelSize = 10.0f;
+    [Serializable]
+    public struct EnemyType
+    {
+        public GameObject prefab;
+        public float      chance;
+    }
+
+    private const int              MAX_ROOMS_IN_QUEUE = 3;
+    public        GameObject       playerObject;
+    public        GameObject       floorPrefab;
+    public        GameObject       wallPrefab;
+    public        GameObject       ceilingPrefab;
+                                   
+    public        GameObject       doorPrefab;
+    public        GameObject       closedDoorPrefab;
+                                   
+    public        List<EnemyType>  enemyTypes;
+                                   
+    public        NavMeshSurface   navMeshSurface;
+                                   
+    public        int              minTilesRoom;
+    public        int              minRoomRectangleWidth;
+    public        int              maxRoomRectangleWidth;
+                                   
+    public        float            roomTileScale = 1.0f;
+    public        float            panelSize = 10.0f;
                   
-    private       LinkedList<Room>  _roomsList;
-    private       Room       _currentRoom;
-    public bool gamePaused = false;
-    public GameObject pauseMenuComponent;
+    public        int              enemiesCount;
+
+    private       LinkedList<Room> _roomsList;
+    private       Room             _currentRoom;
+    public        bool             gamePaused = false;
+    public        GameObject       pauseMenuComponent;
 
     void Start()
     {
@@ -271,7 +283,41 @@ public class GameLogic : MonoBehaviour
         // update the navMeshSurface
         navMeshSurface.BuildNavMesh();
 
+        //SpawnEnemies(result);
+
         return result;
+    }
+
+    private void SpawnEnemies(Room room)
+    {
+        while (room.Enemies.Count < enemiesCount)
+        {
+            var enemy = RouletteWheelSelection();
+            if (enemy)
+            {
+
+            }
+        }
+    }
+
+    GameObject RouletteWheelSelection()
+    {
+        float chancesSum = 0.0f;
+        foreach (var enemyType in enemyTypes)
+            chancesSum += enemyType.chance;
+
+        float chosenPoint = Random.Range(0.0f, chancesSum);
+        
+        float accumulated = 0.0f;
+
+        foreach (var enemyType in enemyTypes)
+        {
+            accumulated += enemyType.chance;
+            if (accumulated >= chosenPoint)
+                return enemyType.prefab;
+        }
+
+        return null;
     }
 
     private bool Lee(Vector2Int nextDoorPosition)
