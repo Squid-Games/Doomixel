@@ -663,12 +663,14 @@ MonoBehaviour:
   ceilingPrefab: {fileID: 3790116756741820355, guid: dac85fc6210c51446bb43567a6e7154b, type: 3}
   doorPrefab: {fileID: 2593951892208515104, guid: b42c9571c9dce0c4da5bd18f2c3df322, type: 3}
   closedDoorPrefab: {fileID: 6774790917506190831, guid: 13ded0f6e648c5f46b2f703a07cd9976, type: 3}
+  enemyTypes: []
   navMeshSurface: {fileID: 1534007382}
   minTilesRoom: 30
   minRoomRectangleWidth: 2
   maxRoomRectangleWidth: 4
   roomTileScale: 0.5
   panelSize: 10
+  enemiesCount: 0
   gamePaused: 0
   pauseMenuComponent: {fileID: 133074157}
 --- !u!4 &323171685
