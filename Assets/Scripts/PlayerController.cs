@@ -30,6 +30,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Cursor.lockState == CursorLockMode.None)
+            return;
+        
         var diffMouseX = Input.GetAxis("Mouse X");
         transform.Rotate(new Vector3(0.0f, diffMouseX * mouseSensivity, 0.0f) * Time.deltaTime);
 
