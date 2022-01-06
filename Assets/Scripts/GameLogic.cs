@@ -111,6 +111,7 @@ public class GameLogic : MonoBehaviour
         if (_roomsList.Last().Door.transform.GetComponentInChildren<Door>().open && _roomsList.Count < MAX_ROOMS_IN_QUEUE)
             _roomsList.AddLast(CreateRoom(_roomsList.Last()));
 
+        UpdateDeadEnemies();
         UpdateCurrentRoom();
     }
     
@@ -175,6 +176,7 @@ public class GameLogic : MonoBehaviour
             var second = first.Next.Value;
             if (second.ClosedDoor.GetComponentInChildren<ClosedDoor>().closed)
             {
+                navMeshSurface.BuildNavMesh();
                 DestroyRoom(first.Value);
                 _roomsList.RemoveFirst();
             }
@@ -283,20 +285,29 @@ public class GameLogic : MonoBehaviour
         // update the navMeshSurface
         navMeshSurface.BuildNavMesh();
 
-        //SpawnEnemies(result);
+        SpawnEnemies(result);
 
         return result;
     }
 
     private void SpawnEnemies(Room room)
     {
+        room.Enemies = new List<GameObject>();
+
         while (room.Enemies.Count < enemiesCount)
         {
             var enemy = RouletteWheelSelection();
-            if (enemy)
+            if (enemy != null)
             {
+                var enemyObject = Instantiate(enemy);
 
-            }
+                var roomTile = Random.Range(0, room.RoomTiles.Count);
+                var tile = room.RoomTiles[roomTile];
+
+                enemyObject.transform.position = new Vector3(tile.Floor.transform.position.x, 1.0f, tile.Floor.transform.position.z);
+                
+                room.Enemies.Add(enemyObject);
+             }
         }
     }
 
@@ -468,6 +479,15 @@ public class GameLogic : MonoBehaviour
 
     private void DestroyRoom(Room room)
     {
+        foreach (var enemy in room.Enemies)
+        {
+            var killable = enemy.GetComponent<Killable>();
+            if (killable != null)
+                killable.Kill();
+        }
+
+        UpdateDeadEnemies();
+        
         foreach (var tile in room.RoomTiles)
         {
             Destroy(tile.Floor);
@@ -481,5 +501,26 @@ public class GameLogic : MonoBehaviour
         room.RoomTiles.Clear();
         room.Door = null;
         room.ClosedDoor = null;
+    }
+
+    private void UpdateDeadEnemies()
+    {
+        HashSet<GameObject> toRemove = new HashSet<GameObject>();
+        foreach (var room in _roomsList)
+            foreach (var enemy in room.Enemies)
+            {
+                var killable = enemy.GetComponent<Killable>();
+                if (killable != null)
+                {
+                    if (killable.IsDead())
+                        toRemove.Add(enemy);
+                }
+            }
+
+        foreach (var room in _roomsList)
+            room.Enemies.RemoveAll(x => toRemove.Contains(x));
+
+        foreach (var enemy in toRemove)
+            Destroy(enemy);
     }
 }

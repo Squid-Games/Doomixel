@@ -8,6 +8,11 @@ public class Killable : MonoBehaviour
     private const int maxLives = 3;
     private GameObject human;
 
+    private bool _isDead = false;
+
+    public void Kill() => _isDead = true;
+    public bool IsDead() => _isDead;
+
     void Start()
     {
         this.lives = maxLives;
@@ -16,6 +21,9 @@ public class Killable : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (_isDead)
+            return;
+
         if (other.gameObject.CompareTag("Bullets"))
             this.DecreaseLife();
     }
@@ -28,7 +36,7 @@ public class Killable : MonoBehaviour
         {
             SoundManagerScript.PlaySound("death");
             ScoreScript.AddScore();
-            Destroy(gameObject);
+            _isDead = true;
             return;
         }
     }
