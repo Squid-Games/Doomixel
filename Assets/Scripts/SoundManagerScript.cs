@@ -26,9 +26,9 @@ public class SoundManagerScript : MonoBehaviour
 
     public static void PlaySound(string clip)
     {
+        audioSrc.volume = Settings.GetSoundVolume();
         if (clip == "gunshot")
             audioSrc.PlayOneShot(gunshotSound);
-
         else if (clip == "death")
             audioSrc.PlayOneShot(deathSoundEffect);
     }
