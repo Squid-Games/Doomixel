@@ -67,7 +67,8 @@ public class GameLogic : MonoBehaviour
                                    
     public        List<EnemyType>  enemyTypes;
                                    
-    public        NavMeshSurface   navMeshSurface;
+    public        GameObject       navMesh;
+    public        NavMeshSurface[] surfaces;
                                    
     public        int              minTilesRoom;
     public        int              minRoomRectangleWidth;
@@ -85,6 +86,7 @@ public class GameLogic : MonoBehaviour
 
     void Start()
     {
+        surfaces = navMesh.GetComponents<NavMeshSurface>();
         AssignPlayer();
         _roomsList = new LinkedList<Room>();
         _currentRoom = CreateRoom(null);
@@ -133,6 +135,14 @@ public class GameLogic : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 
+    private void BuildNavMeshSurfaces() 
+    {
+        foreach(NavMeshSurface surface in surfaces)
+        {
+            surface.BuildNavMesh();
+        }
+    }
+
     private void UpdateCurrentRoom()
     {
         var currentRoom = _roomsList.Find(_currentRoom);
@@ -176,9 +186,10 @@ public class GameLogic : MonoBehaviour
             var second = first.Next.Value;
             if (second.ClosedDoor.GetComponentInChildren<ClosedDoor>().closed)
             {
-                navMeshSurface.BuildNavMesh();
+                // navMeshSurface.BuildNavMesh();
                 DestroyRoom(first.Value);
                 _roomsList.RemoveFirst();
+                BuildNavMeshSurfaces();
             }
         }
     }
@@ -283,7 +294,8 @@ public class GameLogic : MonoBehaviour
 
         AddWalls(chosenTiles, result, previousRoom);
         // update the navMeshSurface
-        navMeshSurface.BuildNavMesh();
+        BuildNavMeshSurfaces();
+        // navMeshSurface.BuildNavMesh();
 
         SpawnEnemies(result);
 
