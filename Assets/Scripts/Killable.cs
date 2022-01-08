@@ -36,6 +36,7 @@ public class Killable : MonoBehaviour
         {
             SoundManagerScript.PlaySound("death");
             ScoreScript.AddScore();
+            Control.reward(Random.Range(0, 7));
             _isDead = true;
             return;
         }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -45,7 +46,7 @@ public class PlayerController : MonoBehaviour
             while (_accumulatedShootTime >= timeToShootBullet)
             {
                 SpawnBullet();
-                SoundManagerScript.PlaySound("gunshot");
+               
                 _accumulatedShootTime -= timeToShootBullet;
             }
         }
@@ -78,13 +79,40 @@ public class PlayerController : MonoBehaviour
         if (bulletsPrefab is null)
             return;
 
+        if (Control.selected_bullet is null)
+        {
+            SoundManagerScript.PlaySound("gunshot_empty");
+            return;
+        }
+
         var bullets = Instantiate(bulletsPrefab, transform.position, Quaternion.identity);
         Physics.IgnoreCollision(bullets.GetComponent<Collider>(), _collider);
         bullets.GetComponent<Bullets>().velocity = GetCurrentAngleAxis() * Vector3.forward * bulletSpeed;
-        bullets.GetComponent<MeshRenderer>().material = Control.selected_bullet.GetMaterial();
-    }
 
-    private Quaternion GetCurrentAngleAxis()
+
+        if (Control.selected_bullet != null)
+        {
+
+            if (Control.selected_bullet.GetAmmo() >= 1)
+            {
+                SoundManagerScript.PlaySound("gunshot");
+                Control.selected_bullet.ammo -= 1;
+                Control.selected_border.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = Control.selected_bullet.GetAmmo().ToString("0");
+                bullets.GetComponent<MeshRenderer>().material = Control.selected_bullet.GetMaterial();
+            }
+            else { bullets.GetComponent<MeshRenderer>().material = null;
+                
+            }
+        }
+
+        else
+        { bullets.GetComponent<MeshRenderer>().material = null;
+
+           
+        }
+        }
+
+        private Quaternion GetCurrentAngleAxis()
     {
         return Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
     }
