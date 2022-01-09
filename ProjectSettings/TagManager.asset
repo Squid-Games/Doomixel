@@ -9,6 +9,7 @@ TagManager:
   - Lifes
   - Human
   - PauseMenu
+  - SceneNavMesh
   layers:
   - Default
   - TransparentFX
