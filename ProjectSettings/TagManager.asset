@@ -10,6 +10,7 @@ TagManager:
   - Human
   - PauseMenu
   - SceneNavMesh
+  - RewardAmmo
   layers:
   - Default
   - TransparentFX

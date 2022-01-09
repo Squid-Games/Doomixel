@@ -25,7 +25,11 @@ public class Killable : MonoBehaviour
             return;
 
         if (other.gameObject.CompareTag("Bullets"))
+        { 
             this.DecreaseLife();
+            Destroy(other.gameObject);
+        }
+            
     }
 
     void DecreaseLife()
@@ -36,6 +40,7 @@ public class Killable : MonoBehaviour
         {
             SoundManagerScript.PlaySound("death");
             ScoreScript.AddScore();
+            Control.reward(Random.Range(0, 7));
             _isDead = true;
             return;
         }

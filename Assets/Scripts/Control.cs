@@ -1,28 +1,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Control : MonoBehaviour
 {
-    List<Bullet> bullets = new List<Bullet>();
-
-    public static Bullet selected_bullet;
-
     private int x = 0;
-    private const int NUM_OF_SLOTS = 6;
+    private const int NUM_OF_SLOTS = 6; //6-1
+
+    static List<Bullet> bullets = new List<Bullet>();
+    static List<Bullet> slots = new List<Bullet>();
+
+
+
+
+    static List<Transform> slots_view = new List<Transform>();
 
     private GameObject inventory;
-    private List<Transform> slots = new List<Transform>();
-    private Transform selected_border;
+
+    public static Bullet selected_bullet;
+    public static Transform selected_border;
 
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 1; i <= NUM_OF_SLOTS; i++)
+        for (int i = 0; i < NUM_OF_SLOTS; i++)
         {
-            Bullet slot1 = new Bullet(25.0f, 0.1f, Resources.Load<Material>("Materials/Bullets"+i), Resources.Load<Sprite>("Bullets/Bullets" + i));
+            Bullet slot1 = new Bullet(i, 25.0f, 0.1f, Resources.Load<Material>("Materials/Bullets/Bullets_" + i), Resources.Load<Sprite>("Bullets/Bullets_" + i), 0);
             bullets.Add(slot1);
         }
+
+        for (int i = 0; i < NUM_OF_SLOTS; i++)
+        {
+            if (i > 2)
+                slots.Add(null);
+            else
+            {
+                Bullet aux = bullets[i];
+                aux.ammo = Random.Range(1, 51);
+                slots.Add(aux);
+            }
+
+        }
+
 
         if (inventory == null)
         {
@@ -32,32 +52,102 @@ public class Control : MonoBehaviour
         int j = 0;
         foreach (Transform x in inventory.transform)
         {
-            slots.Add(x);
-           
+
+            slots_view.Add(x);
+
+
             x.GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-            x.GetChild(0).GetChild(0).GetComponent<Image>().sprite = bullets[j].GetImage();
+            if (slots[j] != null)
+            {
+                x.GetChild(0).GetChild(0).GetComponent<Image>().sprite = slots[j].GetImage();
+                x.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = slots[j].GetAmmo().ToString("0");
+            }
+            else
+            {
+
+                x.GetChild(0).GetChild(0).GetComponent<Image>().sprite = default;
+                x.GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 0);
+                x.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "0";
+            }
+
+
             j++;
         }
-       
-        selected_border = slots[0];
-        selected_bullet = bullets[0];
+
+        selected_border = slots_view[0];
+        selected_bullet = slots[0];
         SelectBullet(0);
     }
 
+
+    public static void reward(int x)
+    {
+
+        int freespace = 7;
+
+
+        Bullet aux = bullets[x];
+
+        bool isfull = true;
+        bool gasit = false;
+        for (int i = 0; i <= 5; i++)
+        {
+            if (slots[i] != null)
+            {
+                if (slots[i].id == aux.id)
+                {
+                    slots[i].ammo += Random.Range(1, 51);
+
+                    slots_view[i].GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = slots[i].GetAmmo().ToString("0");
+                    gasit = true;
+                    break;
+                }
+            }
+            else if (slots[i] == null && isfull == true)
+            {
+                isfull = false;
+                freespace = i;
+
+            }
+
+        }
+
+        if (isfull == false && gasit == false)
+        {
+
+            slots[freespace] = aux;
+            slots[freespace].ammo = Random.Range(1, 51);
+            slots_view[freespace].GetChild(0).GetChild(0).GetComponent<Image>().sprite = slots[freespace].GetImage();
+            slots_view[freespace].GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = slots[freespace].GetAmmo().ToString("0");
+            slots_view[freespace].GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+        }
+
+    }
+
+
     public void SelectBullet(int number)
     {
+        // bullets[priviousnumber]= selected_bullet 
         selected_border.GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
 
-        slots[number].GetChild(0).GetComponent<Image>().color = new Color32(185, 20, 238, 255);
+        slots_view[number].GetChild(0).GetComponent<Image>().color = new Color32(185, 20, 238, 255);
 
-        selected_border = slots[number];
-        selected_bullet = bullets[number];
+        if (slots[number] == null)
+            selected_bullet = null;
+
+        else
+            selected_bullet = slots[number];
+
+        selected_border = slots_view[number];
+
     }
 
     public void SetEmptySlot(int number)
     {
-        slots[number].GetChild(0).GetChild(0).GetComponent<Image>().sprite = null;
-        slots[number].GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 0);
+
+        slots_view[number].GetChild(0).GetChild(0).GetComponent<Image>().sprite = null;
+        slots_view[number].GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 0);
+        slots[number] = null;
     }
 
     private KeyCode[] numericKeyCodes = {
@@ -71,6 +161,26 @@ public class Control : MonoBehaviour
 
     void Update()
     {
+        if (selected_bullet != null)
+        {
+            if (selected_bullet.ammo <= 0)
+            {
+
+                SetEmptySlot(x);
+                SoundManagerScript.PlaySound("gunshot_empty");
+                if (x == 5)
+                {
+                    SelectBullet(0);
+                    x = 0;
+                }
+                else
+                {
+                    SelectBullet(x + 1);
+                    x = x + 1;
+                }
+            }
+        }
+
         if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
         {
             x = Modulo((x + 1), NUM_OF_SLOTS);

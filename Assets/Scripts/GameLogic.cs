@@ -110,6 +110,8 @@ public class GameLogic : MonoBehaviour
         if (playerObject is null)
             return;
 
+        ActivateEnemies();
+
         if (_roomsList.Last().Door.transform.GetComponentInChildren<Door>().open && _roomsList.Count < MAX_ROOMS_IN_QUEUE)
             _roomsList.AddLast(CreateRoom(_roomsList.Last()));
 
@@ -131,11 +133,27 @@ public class GameLogic : MonoBehaviour
         this.pauseMenuComponent.SetActive(false);
     }
     
-    public void ExitGame(){
+    public void ExitGame()
+    {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 
-    private void BuildNavMeshSurfaces() 
+    private void ActivateEnemies()
+    {
+        foreach(var room in _roomsList)
+        {
+            foreach(var enemy in room.Enemies)
+            {
+                var navMeshAgent = enemy.GetComponent<NavMeshAgent>();
+                if(navMeshAgent != null && !navMeshAgent.enabled)
+                {
+                    navMeshAgent.enabled = true;
+                }
+            }
+        }
+    }
+
+    private void BuildNavMeshSurfaces()
     {
         foreach(NavMeshSurface surface in surfaces)
         {
@@ -317,7 +335,6 @@ public class GameLogic : MonoBehaviour
                 var tile = room.RoomTiles[roomTile];
 
                 enemyObject.transform.position = new Vector3(tile.Floor.transform.position.x, 1.0f, tile.Floor.transform.position.z);
-                
                 room.Enemies.Add(enemyObject);
              }
         }

@@ -29,7 +29,7 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        playerInSightRange = true; // use some raycasting using the orientation and radius
+        playerInSightRange = false; // use some raycasting using the orientation and radius
         playerInAttackRange = false; // use some raycasting or euclidian distance (because the enemy is already facing the player)
 
         if(!playerInSightRange && !playerInAttackRange)
