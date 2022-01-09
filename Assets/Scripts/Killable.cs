@@ -25,7 +25,10 @@ public class Killable : MonoBehaviour
             return;
 
         if (other.gameObject.CompareTag("Bullets"))
-            this.DecreaseLife();
+        { this.DecreaseLife();
+            Destroy(other.gameObject);
+        }
+            
     }
 
     void DecreaseLife()

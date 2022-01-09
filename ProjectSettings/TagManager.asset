@@ -9,6 +9,7 @@ TagManager:
   - Lifes
   - Human
   - PauseMenu
+  - RewardAmmo
   layers:
   - Default
   - TransparentFX

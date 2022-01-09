@@ -5,9 +5,9 @@ public class MoveUpDown : MonoBehaviour
 {
     private bool up;
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
             int x = 0;
 

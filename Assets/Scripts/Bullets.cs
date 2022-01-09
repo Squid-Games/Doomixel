@@ -8,10 +8,10 @@ public class Bullets : MonoBehaviour
 
     private float _distanceInAir;
 
-    void OnCollisionExit(Collision other)
+    void OnTriggerExit(Collider other)
     {
-        //trebuie luat dupa tag sau nume 
-        Debug.Log("hello");
+        if (!other.gameObject.CompareTag("Bullets") && !other.gameObject.CompareTag("RewardAmmo"))
+            Destroy(gameObject);
 
     }
     void Start()
