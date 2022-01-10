@@ -16,7 +16,7 @@ public class EnemyAI : MonoBehaviour
     public float attackCooldown;
     bool attacked;
 
-    public float sightRadius, attackRadius;
+    public float attackRadius;
     bool playerInSightRange, playerInAttackRange;
 
     public Vector3[] waypointPositions = null;
@@ -26,6 +26,12 @@ public class EnemyAI : MonoBehaviour
     public int minPathLength = 3;
     public int maxPathLength = 10;
 
+    public int raysNumber = 5;
+    public float rayAngle = 10.0f;
+    public float rayDistance = 10.0f;
+
+    private List<Vector3> _rays = null;
+    
     void Awake()
     {
         playerTransform = GameObject.Find("Player").transform;
@@ -35,7 +41,7 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        playerInSightRange = false; // use some raycasting using the orientation and radius
+        playerInSightRange = CheckPlayerInSight(); // use some raycasting using the orientation and radius
         playerInAttackRange = false; // use some raycasting or euclidian distance (because the enemy is already facing the player)
 
         if(!playerInSightRange && !playerInAttackRange)
@@ -50,6 +56,51 @@ public class EnemyAI : MonoBehaviour
         {
             AttackPlayer();
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        if (_rays is null)
+            return;
+
+        foreach (var ray in _rays)
+            Gizmos.DrawLine(transform.position, transform.position + ray * rayDistance);
+    }
+
+    private bool CheckPlayerInSight()
+    {
+        var forward = (walkPoint - transform.position).normalized;
+        Quaternion l = Quaternion.Euler(0.0f, -rayAngle, 0.0f);
+        Quaternion r = Quaternion.Euler(0.0f, rayAngle, 0.0f);
+
+        List<Vector3> directions = new List<Vector3>() { forward };
+        
+        var currentDirection = forward;
+        for (int leftRay = 0; leftRay < raysNumber; leftRay++)
+        {
+            currentDirection = l * currentDirection;
+            directions.Add(currentDirection);
+        }
+
+        currentDirection = forward;
+        for (int rightRay = 0; rightRay < raysNumber; rightRay++)
+        {
+            currentDirection = r * currentDirection;
+            directions.Add(currentDirection);
+        }
+
+        _rays = directions;
+
+        foreach (var direction in directions)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, transform.TransformDirection(direction), out hit))
+                if (hit.distance < rayDistance)
+                    if (hit.transform.CompareTag("Player"))
+                        return true;
+        }
+
+        return false;
     }
 
     private void MoveAround() 
