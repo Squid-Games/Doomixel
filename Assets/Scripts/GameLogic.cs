@@ -83,6 +83,7 @@ public class GameLogic : MonoBehaviour
     private       Room             _currentRoom;
     public        bool             gamePaused = false;
     public        GameObject       pauseMenuComponent;
+    public        GameObject       gameOverMenuComponent;
 
     void Start()
     {
@@ -122,17 +123,23 @@ public class GameLogic : MonoBehaviour
     public void PauseGame()
     {
         Cursor.lockState = CursorLockMode.None;
-        this.gamePaused = true;
-        this.pauseMenuComponent.SetActive(true);
+        gamePaused = true;
+        pauseMenuComponent.SetActive(true);
+    }
+    
+    public void GameOver()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        gameOverMenuComponent.SetActive(true);
     }
 
     public void ContinueGame()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        this.gamePaused = false;
-        this.pauseMenuComponent.SetActive(false);
+        gamePaused = false;
+        pauseMenuComponent.SetActive(false);
     }
-    
+
     public void ExitGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
