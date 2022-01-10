@@ -40,7 +40,6 @@ public class ScoreScript : MonoBehaviour
 
     void UpdateScoreDisplay()
     {
-        Debug.Log(_displayScore);
         scoreText.text = string.Format("Score: {0:000000}", _displayScore);
     }
 

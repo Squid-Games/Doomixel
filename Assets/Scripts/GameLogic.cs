@@ -342,8 +342,64 @@ public class GameLogic : MonoBehaviour
                 var tile = room.RoomTiles[roomTile];
 
                 enemyObject.transform.position = new Vector3(tile.Floor.transform.position.x, 1.0f, tile.Floor.transform.position.z);
+                SetEnemyWaypoints(enemyObject, tile, room);
                 room.Enemies.Add(enemyObject);
              }
+        }
+    }
+
+    private void SetEnemyWaypoints(GameObject enemy, RoomTile currentTile, Room room)
+    {
+        var enemyAi = enemy.GetComponent<EnemyAI>();
+        if (enemyAi != null)
+        {
+            List<Vector2Int> visitedPositions = new List<Vector2Int>();
+            HashSet<Vector2Int> visitedPositionsSet = new HashSet<Vector2Int>();
+
+            visitedPositions.Add(currentTile.Position);
+            visitedPositionsSet.Add(currentTile.Position);
+
+            int listIndex = 0;
+            while (visitedPositionsSet.Count < enemyAi.maxWalkTilesRange && listIndex < visitedPositions.Count)
+            {
+                var currentPosition = visitedPositions[listIndex++];
+
+                int[] dx = { 0, -1, 0, 1 };
+                int[] dz = { -1, 0, 1, 0 };
+
+                for (int i = 0; i < dx.Length; i++)
+                {
+                    Vector2Int nextPos = currentPosition + new Vector2Int(dx[i], dz[i]);
+                    if (!visitedPositionsSet.Contains(nextPos))
+                    {
+                        if (room.RoomTiles.Any(x => x.Position.x == nextPos.x && x.Position.z == nextPos.z))
+                        {
+                            var roomTile = room.RoomTiles.Find(x => x.Position.x == nextPos.x && x.Position.z == nextPos.z);
+                            //if (roomTile.Walls.Count == 0)
+                            {
+                                visitedPositions.Add(nextPos);
+                                visitedPositionsSet.Add(nextPos);
+                            }
+                        }
+                    }
+                }
+            }
+
+            int waypointsCount = Math.Min(Random.Range(enemyAi.minPathLength, enemyAi.maxPathLength + 1), visitedPositions.Count);
+            for (int i = 0; i < visitedPositions.Count; i++)
+            {
+                int otherIx = Random.Range(0, visitedPositions.Count);
+                Vector2Int tmp = visitedPositions[i];
+                visitedPositions[i] = visitedPositions[otherIx];
+                visitedPositions[otherIx] = tmp;
+            }
+
+            visitedPositions.RemoveRange(waypointsCount, visitedPositions.Count - waypointsCount);
+            Vector3[] actualPositions = new Vector3[visitedPositions.Count];
+            for (int i = 0; i < visitedPositions.Count; i++)
+                actualPositions[i] = new Vector3(visitedPositions[i].x * panelSize * roomTileScale, 0.0f, visitedPositions[i].z * panelSize * roomTileScale);
+            
+            enemyAi.waypointPositions = actualPositions;
         }
     }
 

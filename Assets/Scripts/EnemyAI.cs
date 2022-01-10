@@ -11,14 +11,20 @@ public class EnemyAI : MonoBehaviour
     // Walk around
     Vector3 walkPoint;
     bool walkPointSet;
-    public float walkPointRange;
-
+    
     // Attack
     public float attackCooldown;
     bool attacked;
 
     public float sightRadius, attackRadius;
     bool playerInSightRange, playerInAttackRange;
+
+    public Vector3[] waypointPositions = null;
+    private int waypointIndex = 0;
+
+    public int maxWalkTilesRange = 15;
+    public int minPathLength = 3;
+    public int maxPathLength = 10;
 
     void Awake()
     {
@@ -59,7 +65,7 @@ public class EnemyAI : MonoBehaviour
 
         Vector3 distanceLeft = transform.position - walkPoint;
 
-        if(distanceLeft.magnitude < 1f)
+        if(distanceLeft.magnitude < 5f)
         {
             walkPointSet = false;
         }
@@ -67,13 +73,12 @@ public class EnemyAI : MonoBehaviour
 
     private void SearchWalkPoint()
     {
-        // the enemies are walking on a straight line
-        float orientation = Random.Range(-1, 1);
-        float randomX = (orientation <= 0.0f) ? Random.Range(-walkPointRange, walkPointRange) : 0;
-        float randomZ = (orientation > 0.0f) ? Random.Range(-walkPointRange, walkPointRange) : 0;
-    
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
-       
+        if (waypointPositions is null)
+            return;
+
+        walkPoint = waypointPositions[waypointIndex++];
+        waypointIndex %= waypointPositions.Length;
+
         walkPointSet = true;
     }
 
