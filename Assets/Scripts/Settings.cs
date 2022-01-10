@@ -19,5 +19,6 @@ public class Settings : MonoBehaviour
     public void UpdateSoundVolume(float val)
     {
         PlayerPrefs.SetFloat("Volume", val);
+        PlayerPrefs.Save();
     }
 }
