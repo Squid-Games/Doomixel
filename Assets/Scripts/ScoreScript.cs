@@ -9,34 +9,34 @@ public class ScoreScript : MonoBehaviour
     // Start is called before the first frame update
     private float score = 0;
     private PlayerController _playerController;
-    private static int resetTimer = 0;
-    public Text txt;
+    private static int _resetTimer = 0;
+    public Text scoreText;
 
     void Start()
     {
-        this._playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        _playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        scoreText.text = "Score: 0";
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if (this._playerController.StartTimer() == 1)
+        if (_playerController.StartTimer() == 1)
         {
             timer += Time.deltaTime;
-            if (resetTimer == 1)
+            if (_resetTimer == 1)
             {
                 score = score + ((1 / timer) * 100);
                 score = Mathf.RoundToInt(score);
-                txt.text = score.ToString();
+                scoreText.text = "Score: " + score;
                 timer = 0;
-                resetTimer = 0;
+                _resetTimer = 0;
             }
         }
     }
 
     public static void AddScore()
     {
-        resetTimer = 1; 
+        _resetTimer = 1; 
     }
 }
