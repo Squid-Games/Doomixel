@@ -11,15 +11,27 @@ public class EnemyAI : MonoBehaviour
     // Walk around
     Vector3 walkPoint;
     bool walkPointSet;
-    public float walkPointRange;
-
+    
     // Attack
     public float attackCooldown;
     bool attacked;
 
-    public float sightRadius, attackRadius;
+    public float attackRadius;
     bool playerInSightRange, playerInAttackRange;
 
+    public Vector3[] waypointPositions = null;
+    private int waypointIndex = 0;
+
+    public int maxWalkTilesRange = 15;
+    public int minPathLength = 3;
+    public int maxPathLength = 10;
+
+    public int raysNumber = 5;
+    public float rayAngle = 10.0f;
+    public float rayDistance = 10.0f;
+
+    private List<Vector3> _rays = null;
+    
     void Awake()
     {
         playerTransform = GameObject.Find("Player").transform;
@@ -29,7 +41,7 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        playerInSightRange = false; // use some raycasting using the orientation and radius
+        playerInSightRange = CheckPlayerInSight(); // use some raycasting using the orientation and radius
         playerInAttackRange = false; // use some raycasting or euclidian distance (because the enemy is already facing the player)
 
         if(!playerInSightRange && !playerInAttackRange)
@@ -46,6 +58,51 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    void OnDrawGizmos()
+    {
+        if (_rays is null)
+            return;
+
+        foreach (var ray in _rays)
+            Gizmos.DrawLine(transform.position, transform.position + ray * rayDistance);
+    }
+
+    private bool CheckPlayerInSight()
+    {
+        var forward = (walkPoint - transform.position).normalized;
+        Quaternion l = Quaternion.Euler(0.0f, -rayAngle, 0.0f);
+        Quaternion r = Quaternion.Euler(0.0f, rayAngle, 0.0f);
+
+        List<Vector3> directions = new List<Vector3>() { forward };
+        
+        var currentDirection = forward;
+        for (int leftRay = 0; leftRay < raysNumber; leftRay++)
+        {
+            currentDirection = l * currentDirection;
+            directions.Add(currentDirection);
+        }
+
+        currentDirection = forward;
+        for (int rightRay = 0; rightRay < raysNumber; rightRay++)
+        {
+            currentDirection = r * currentDirection;
+            directions.Add(currentDirection);
+        }
+
+        _rays = directions;
+
+        foreach (var direction in directions)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, transform.TransformDirection(direction), out hit))
+                if (hit.distance < rayDistance)
+                    if (hit.transform.CompareTag("Player"))
+                        return true;
+        }
+
+        return false;
+    }
+
     private void MoveAround() 
     {
         if (!walkPointSet)
@@ -59,7 +116,7 @@ public class EnemyAI : MonoBehaviour
 
         Vector3 distanceLeft = transform.position - walkPoint;
 
-        if(distanceLeft.magnitude < 1f)
+        if(distanceLeft.magnitude < 5f)
         {
             walkPointSet = false;
         }
@@ -67,13 +124,12 @@ public class EnemyAI : MonoBehaviour
 
     private void SearchWalkPoint()
     {
-        // the enemies are walking on a straight line
-        float orientation = Random.Range(-1, 1);
-        float randomX = (orientation <= 0.0f) ? Random.Range(-walkPointRange, walkPointRange) : 0;
-        float randomZ = (orientation > 0.0f) ? Random.Range(-walkPointRange, walkPointRange) : 0;
-    
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
-       
+        if (waypointPositions is null)
+            return;
+
+        walkPoint = waypointPositions[waypointIndex++];
+        waypointIndex %= waypointPositions.Length;
+
         walkPointSet = true;
     }
 

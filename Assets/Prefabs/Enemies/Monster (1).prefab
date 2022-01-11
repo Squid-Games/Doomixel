@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4866920141537302462}
   - component: {fileID: 4866920141537302439}
   - component: {fileID: 4866920141537302456}
+  - component: {fileID: 2616779948639649875}
   m_Layer: 0
   m_Name: Monster (1)
   m_TagString: Enemy
@@ -139,7 +140,7 @@ NavMeshAgent:
   m_Acceleration: 5
   avoidancePriority: 50
   m_AngularSpeed: 90
-  m_StoppingDistance: 10
+  m_StoppingDistance: 3
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -159,7 +160,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a747643ed274af7419bb0e1dd4ba396d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkPointRange: 4
   attackCooldown: 8
-  sightRadius: 30
   attackRadius: 20
+  waypointPositions: []
+  maxWalkTilesRange: 15
+  minPathLength: 3
+  maxPathLength: 10
+  raysNumber: 5
+  rayAngle: 10
+  rayDistance: 10
+--- !u!114 &2616779948639649875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4866920141537302463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fe7ee9f97f5c7648893514aa7d67c18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frames:
+  - material: {fileID: 2100000, guid: 44f5e2051becfb747964ca21f37010fd, type: 2}
+    direction: {x: 0, y: 0, z: 1}
+  - material: {fileID: 2100000, guid: e6af098cbceccc6479fabc03ec950f7e, type: 2}
+    direction: {x: 0, y: 0, z: -1}
+  - material: {fileID: 2100000, guid: 55ef60f6a4941584b9aecc7dde931615, type: 2}
+    direction: {x: -1, y: 0, z: 0}
+  - material: {fileID: 2100000, guid: a5d12347bebe64441856cc25d5167370, type: 2}
+    direction: {x: 1, y: 0, z: 0}
