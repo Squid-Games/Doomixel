@@ -170,8 +170,14 @@ public class GameLogic : MonoBehaviour
 
     private void UpdateCurrentRoom()
     {
+        if (_currentRoom.Enemies.Count == 0)
+        {
+            if (_currentRoom.Door != null)
+                _currentRoom.Door.GetComponentInChildren<Door>().Open();
+        }
+
         var currentRoom = _roomsList.Find(_currentRoom);
-        var nextRoom = currentRoom.Next.Value;
+        var nextRoom = currentRoom.Next == null ? null : currentRoom.Next.Value;
 
         if (nextRoom != null)
         {
@@ -197,9 +203,6 @@ public class GameLogic : MonoBehaviour
 
                 if (_currentRoom.ClosedDoor != null)
                     _currentRoom.ClosedDoor.GetComponentInChildren<ClosedDoor>().closing = true;
-
-                if (_currentRoom.Door != null)
-                    _currentRoom.Door.GetComponentInChildren<Door>().Open();
             }
         }
 
@@ -568,8 +571,8 @@ public class GameLogic : MonoBehaviour
 
                     actualDoor.GetComponent<Door>().roomTileScale = roomTileScale;
                     actualDoor.GetComponent<Door>().panelSize = panelSize;
-                    if (previousRoom == null)
-                        actualDoor.GetComponent<Door>().Open();
+                    //if (previousRoom == null)
+                    //    actualDoor.GetComponent<Door>().Open();
                     
                     Destroy(tile.Walls[i]);
 

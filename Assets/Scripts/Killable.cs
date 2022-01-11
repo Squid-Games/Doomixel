@@ -32,9 +32,13 @@ public class Killable : MonoBehaviour
             
     }
 
+    private void Update()
+    {
+        this.human.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1, (1.0f / (float)maxLives) * (float)(this.lives));
+    }
+
     void DecreaseLife()
     {
-        this.human.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1, (1.0f / (float)maxLives) * (float)this.lives);
         this.lives--;
         if (this.lives <= 0)
         {
