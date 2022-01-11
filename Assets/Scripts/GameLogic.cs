@@ -338,8 +338,22 @@ public class GameLogic : MonoBehaviour
             {
                 var enemyObject = Instantiate(enemy);
 
+                bool exists = false;
+                foreach (var otherTile in room.RoomTiles)
+                    if (otherTile.Walls.Count == 0)
+                        exists = true;
+
                 var roomTile = Random.Range(0, room.RoomTiles.Count);
                 var tile = room.RoomTiles[roomTile];
+                
+                if (exists)
+                {
+                    while (tile.Walls.Count != 0)
+                    {
+                        roomTile = Random.Range(0, room.RoomTiles.Count);
+                        tile = room.RoomTiles[roomTile];
+                    }
+                }
 
                 enemyObject.transform.position = new Vector3(tile.Floor.transform.position.x, 1.0f, tile.Floor.transform.position.z);
                 SetEnemyWaypoints(enemyObject, tile, room);
@@ -375,7 +389,7 @@ public class GameLogic : MonoBehaviour
                         if (room.RoomTiles.Any(x => x.Position.x == nextPos.x && x.Position.z == nextPos.z))
                         {
                             var roomTile = room.RoomTiles.Find(x => x.Position.x == nextPos.x && x.Position.z == nextPos.z);
-                            //if (roomTile.Walls.Count == 0)
+                            if (roomTile.Walls.Count == 0)
                             {
                                 visitedPositions.Add(nextPos);
                                 visitedPositionsSet.Add(nextPos);
