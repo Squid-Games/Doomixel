@@ -10,13 +10,12 @@ public class Killable : MonoBehaviour
 
     private bool _isDead = false;
 
-    public void Kill() => _isDead = true;
     public bool IsDead() => _isDead;
 
     void Start()
     {
-        this.lives = maxLives;
-        this.human = this.gameObject; 
+        lives = maxLives;
+        human = this.gameObject; 
     }
 
     void OnTriggerEnter(Collider other)
@@ -26,7 +25,7 @@ public class Killable : MonoBehaviour
 
         if (other.gameObject.CompareTag("Bullets"))
         { 
-            this.DecreaseLife();
+            DecreaseLife();
             Destroy(other.gameObject);
         }
             
@@ -34,19 +33,21 @@ public class Killable : MonoBehaviour
 
     private void Update()
     {
-        this.human.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1, (1.0f / (float)maxLives) * (float)(this.lives));
+        human.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1, 1.0f / maxLives * lives);
     }
 
     void DecreaseLife()
     {
-        this.lives--;
-        if (this.lives <= 0)
-        {
-            SoundManagerScript.PlaySound("death");
-            ScoreScript.AddScore();
-            Control.reward(Random.Range(0, 7));
-            _isDead = true;
-            return;
-        }
+        lives--;
+        if (lives <= 0)
+            Kill();
+    }
+
+    public void Kill()
+    {
+        SoundManagerScript.PlaySound("death");
+        Control.reward(Random.Range(0, 7));
+        _isDead = true;
+        ScoreScript.AddScore(10);
     }
 }
