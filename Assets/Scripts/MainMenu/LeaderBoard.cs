@@ -23,7 +23,7 @@ public class LeaderBoard : MonoBehaviour
             
             Text duplicate = Instantiate(TextModel, TextModel.transform.parent);
             duplicate.transform.position += new Vector3(0, -70 * (i+1), 0);
-            duplicate.text = $"  {scoresLength - i}              " + string.Format("{0:000000}", score);
+            duplicate.text = $"  {scoresLength - i}            " + string.Format("{0:000000}", score);
             duplicate.fontStyle = FontStyle.Normal;
             if (score > maxScore)
                 maxScore = score;
