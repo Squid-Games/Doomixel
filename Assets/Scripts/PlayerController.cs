@@ -19,11 +19,24 @@ public class PlayerController : MonoBehaviour
     public float lives = 5;
 
     public int boolStart = 0;
+    public GameObject weapon;
+    private Vector3 weapon_origin;
+    private float weapon_pos = 0.0f;
+    private const float MAX_SWING_VAL = 40.0f;
+    private int swing_orientation = -1;
+    private float swing_speed = 150.0f;
+    
+    private float move_delay = 0.0f; 
+
+    float calculateMovePath(float x) {
+        return 0.0025f * Mathf.Pow(x, 2);
+    }
 
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
+        weapon_origin = weapon.transform.position;
 
         Cursor.lockState = CursorLockMode.Locked;
         _accumulatedShootTime = 0.0f;
@@ -39,6 +52,9 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButton("Fire1"))
         {
+            weapon.transform.position = weapon_origin;
+            move_delay = 0.25f;
+            weapon_pos = 0.0f;
             boolStart = 1;
 
             _accumulatedShootTime += Time.deltaTime;
@@ -51,6 +67,19 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+    }
+
+    void MoveWeapon() {
+        float new_pos_y = calculateMovePath(weapon_pos);
+        var posVector = new Vector3(weapon_pos, new_pos_y, 0.0f);
+
+        weapon_pos += swing_speed * swing_orientation * Time.deltaTime;
+        if(Mathf.Abs(weapon_pos) > MAX_SWING_VAL) {
+            weapon_pos = MAX_SWING_VAL * swing_orientation;
+            swing_orientation *= -1;
+        }
+
+        weapon.transform.position = weapon_origin + posVector;
     }
 
     void FixedUpdate()
@@ -71,7 +100,15 @@ public class PlayerController : MonoBehaviour
         var rotatedVector = GetCurrentAngleAxis() * inputVector;
 
         _rigidbody.velocity = rotatedVector * movementSpeed;
-
+        if(move_delay == 0)
+        {
+            MoveWeapon();
+        }
+        else
+        {
+            move_delay = Mathf.Max(0.0f, move_delay - Time.deltaTime);
+        }
+        
     }
 
     void SpawnBullet()
@@ -100,19 +137,18 @@ public class PlayerController : MonoBehaviour
                 Control.selected_border.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = Control.selected_bullet.GetAmmo().ToString("0");
                 bullets.GetComponent<MeshRenderer>().material = Control.selected_bullet.GetMaterial();
             }
-            else { bullets.GetComponent<MeshRenderer>().material = null;
-                
+            else 
+            { 
+                bullets.GetComponent<MeshRenderer>().material = null;
             }
         }
-
-        else
-        { bullets.GetComponent<MeshRenderer>().material = null;
-
-           
+        else 
+        { 
+            bullets.GetComponent<MeshRenderer>().material = null;
         }
-        }
+    }
 
-        private Quaternion GetCurrentAngleAxis()
+    private Quaternion GetCurrentAngleAxis()
     {
         return Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
     }
