@@ -1,39 +1,35 @@
-using System;
-using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LeaderBoard : MonoBehaviour
 {
     public Text TextModel;
+    public Text HighScoreText;
     public GameObject ScrollContent;
-    private int generatedScores = 0;
-    
+
     public void Start()
     {
         GenerateLeaderboard();
     }
 
-    public void Update()
-    {
-        if(ScoreScript.scoresHistory.values.Count > generatedScores)
-            GenerateLeaderboard();
-    }
-
     void GenerateLeaderboard()
     {
-        generatedScores = ScoreScript.scoresHistory.values.Count;
-        for (int i=0;i<ScoreScript.scoresHistory.values.Count;i++)
+        
+        int scoresLength = MainMenu.savedData.scoresHistory.Count;
+        int maxScore = 0;
+        for (int i=0;i<scoresLength;i++)
         {
-            ScoreObject item = ScoreScript.scoresHistory.values[i];
+            int score = MainMenu.savedData.scoresHistory[scoresLength - i - 1];
             
             Text duplicate = Instantiate(TextModel, TextModel.transform.parent);
             duplicate.transform.position += new Vector3(0, -70 * (i+1), 0);
-            duplicate.text = $"#{i+1} #{item.value}";
+            duplicate.text = $"  {scoresLength - i}              " + string.Format("{0:000000}", score);
             duplicate.fontStyle = FontStyle.Normal;
+            if (score > maxScore)
+                maxScore = score;
             
-            ScrollContent.GetComponent<RectTransform>().sizeDelta += new Vector2(0, 130);
+            ScrollContent.GetComponent<RectTransform>().sizeDelta += new Vector2(0, 100);
         }
+        HighScoreText.text = string.Format("{0:000000}", maxScore);
     }
 }

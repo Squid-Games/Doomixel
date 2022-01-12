@@ -6,42 +6,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScoreObject
-{
-    public DateTime time;
-    public int value;
-
-    public ScoreObject(DateTime time, int value)
-    {
-        this.time = time;
-        this.value = value;
-    }
-}
-
-public class ScoresObject
-{
-    public List<ScoreObject> values;
-
-    public ScoresObject()
-    {
-        values = new List<ScoreObject>();
-        // if (FileHandler.Exists("ScoresHistory.json"))
-        //     values = FileHandler.ReadFromJSON<List<ScoreObject>>("ScoresHistory.json");
-        if(values.Count==0)
-            New(DateTime.Now);
-    }
-    
-    public void New(DateTime time, int value = 0)
-    {
-        values.Add(new ScoreObject(time, value));
-    }
-
-    public void Save()
-    {
-        FileHandler.SaveToJSON(values, "ScoresHistory.json");
-    }
-}
-
 public class ScoreScript : MonoBehaviour
 {
     private float realTimer = 0.0f;
@@ -50,12 +14,13 @@ public class ScoreScript : MonoBehaviour
     public Text timerText;
     private float _displayScore;
     private float _transitionSpeed = 100;
-    public static ScoresObject scoresHistory = new ScoresObject();
+    private static DataManager.SavedData savedData;
     private static int _score = 0;
 
     void Start()
     {
         _playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        savedData = DataManager.Load();
     }
 
     // Update is called once per frame
@@ -83,12 +48,14 @@ public class ScoreScript : MonoBehaviour
     public static void AddScore(int points)
     {
         _score += points;
+        savedData.score = _score;
+        DataManager.Save(savedData);
     }
 
     public static void SaveScore()
     {
-        scoresHistory.New(DateTime.Now, _score);
-        scoresHistory.Save();
+        savedData.scoresHistory.Add(_score);
+        DataManager.Save(savedData);
         _score = 0;
     }
 }

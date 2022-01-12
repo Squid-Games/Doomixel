@@ -144,8 +144,8 @@ public class GameLogic : MonoBehaviour
 
     public void ExitGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
         ScoreScript.SaveScore();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 
     private void ActivateEnemies()
