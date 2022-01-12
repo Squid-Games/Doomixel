@@ -24,7 +24,7 @@ public class Control : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < NUM_OF_SLOTS; i++)
+        for (int i = 0; i < 7; i++)
         {
             Bullet slot1 = new Bullet(i, 25.0f, 0.1f, Resources.Load<Material>("Materials/Bullets/Bullets_" + i), Resources.Load<Sprite>("Bullets/Bullets_" + i), 0);
             bullets.Add(slot1);
@@ -180,23 +180,25 @@ public class Control : MonoBehaviour
                 }
             }
         }
-
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
+        if (!GameLogic.gamePaused)
         {
-            x = Modulo((x + 1), NUM_OF_SLOTS);
-            SelectBullet(x);
-        }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0f) // forward
-        {
-            x = Modulo((x - 1), NUM_OF_SLOTS);
-            SelectBullet(x);
-        }
-        for(int i = 0; i < NUM_OF_SLOTS; i++)
-        {
-            if(Input.GetKeyDown(numericKeyCodes[i]))
+            if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
             {
-                x = i;
+                x = Modulo((x + 1), NUM_OF_SLOTS);
                 SelectBullet(x);
+            }
+            if (Input.GetAxis("Mouse ScrollWheel") < 0f) // forward
+            {
+                x = Modulo((x - 1), NUM_OF_SLOTS);
+                SelectBullet(x);
+            }
+            for (int i = 0; i < NUM_OF_SLOTS; i++)
+            {
+                if (Input.GetKeyDown(numericKeyCodes[i]))
+                {
+                    x = i;
+                    SelectBullet(x);
+                }
             }
         }
     }

@@ -8,7 +8,7 @@ public class Bullets : MonoBehaviour
 
     private float _distanceInAir;
 
-    void OnTriggerExit(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if (!other.gameObject.CompareTag("Bullets") && !other.gameObject.CompareTag("RewardAmmo"))
             Destroy(gameObject);

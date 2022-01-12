@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Killable : MonoBehaviour
 {
@@ -46,8 +45,9 @@ public class Killable : MonoBehaviour
     public void Kill()
     {
         SoundManagerScript.PlaySound("death");
-        Control.reward(Random.Range(0, 7));
+        Control.reward(Random.Range(1, 7));
         _isDead = true;
         ScoreScript.AddScore(10);
+        
     }
 }

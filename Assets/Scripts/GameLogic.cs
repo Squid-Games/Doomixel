@@ -81,7 +81,7 @@ public class GameLogic : MonoBehaviour
 
     private       LinkedList<Room> _roomsList;
     private       Room             _currentRoom;
-    public        bool             gamePaused = false;
+    public        static bool             gamePaused = false;
     public        GameObject       pauseMenuComponent;
     public        GameObject       gameOverMenuComponent;
 
@@ -98,7 +98,7 @@ public class GameLogic : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (this.gamePaused)
+            if (gamePaused)
                 this.ContinueGame();
             else
                 this.PauseGame();
@@ -124,6 +124,7 @@ public class GameLogic : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         gamePaused = true;
+        Time.timeScale = 0f;
         pauseMenuComponent.SetActive(true);
     }
     
@@ -137,6 +138,7 @@ public class GameLogic : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         gamePaused = false;
+        Time.timeScale = 1f;
         pauseMenuComponent.SetActive(false);
     }
 
