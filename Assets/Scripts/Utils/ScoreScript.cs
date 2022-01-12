@@ -25,8 +25,10 @@ public class ScoresObject
     public ScoresObject()
     {
         values = new List<ScoreObject>();
-        if (FileHandler.Exists("ScoresHistory.json"))
-            values = FileHandler.ReadFromJSON<List<ScoreObject>>("ScoresHistory.json");
+        // if (FileHandler.Exists("ScoresHistory.json"))
+        //     values = FileHandler.ReadFromJSON<List<ScoreObject>>("ScoresHistory.json");
+        if(values.Count==0)
+            New(DateTime.Now);
     }
     
     public void New(DateTime time, int value = 0)
@@ -48,7 +50,7 @@ public class ScoreScript : MonoBehaviour
     public Text timerText;
     private float _displayScore;
     private float _transitionSpeed = 100;
-    public static ScoresObject scoresHistory;
+    public static ScoresObject scoresHistory = new ScoresObject();
     private static int _score = 0;
 
     void Start()
