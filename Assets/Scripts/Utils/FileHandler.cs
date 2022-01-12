@@ -5,29 +5,16 @@ using System.Linq;
 using UnityEngine;
 
 public static class FileHandler {
+    
 
-    public static void SaveToJSON<T> (List<T> toSave, string filename) {
-        Debug.Log (GetPath (filename));
-        string content = JsonHelper.ToJson<T> (toSave.ToArray ());
-        WriteFile (GetPath (filename), content);
+    public static bool Exists(string filename)
+    {
+        return File.Exists(GetPath(filename));
     }
 
     public static void SaveToJSON<T> (T toSave, string filename) {
         string content = JsonUtility.ToJson (toSave);
         WriteFile (GetPath (filename), content);
-    }
-
-    public static List<T> ReadListFromJSON<T> (string filename) {
-        string content = ReadFile (GetPath (filename));
-
-        if (string.IsNullOrEmpty (content) || content == "{}") {
-            return new List<T> ();
-        }
-
-        List<T> res = JsonHelper.FromJson<T> (content).ToList ();
-
-        return res;
-
     }
 
     public static T ReadFromJSON<T> (string filename) {
