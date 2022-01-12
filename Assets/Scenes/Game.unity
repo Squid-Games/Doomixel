@@ -1613,6 +1613,7 @@ MonoBehaviour:
   bulletsPrefab: {fileID: 356066739564174031, guid: f4853425db9e1c840a94a42de2963db8, type: 3}
   lives: 5
   boolStart: 0
+  weapon: {fileID: 1422630740}
 --- !u!1 &595663556
 GameObject:
   m_ObjectHideFlags: 0
