@@ -22,14 +22,16 @@ public class Control : MonoBehaviour
     public static Transform selected_border;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        bullets = new List<Bullet>();
         for (int i = 0; i < 7; i++)
         {
             Bullet slot1 = new Bullet(i, 25.0f, 0.1f, Resources.Load<Material>("Materials/Bullets/Bullets_" + i), Resources.Load<Sprite>("Bullets/Bullets_" + i), 0);
             bullets.Add(slot1);
         }
 
+        slots = new List<Bullet>();
         for (int i = 0; i < NUM_OF_SLOTS; i++)
         {
             if (i > 2)
@@ -50,6 +52,7 @@ public class Control : MonoBehaviour
         }
 
         int j = 0;
+        slots_view = new List<Transform>();
         foreach (Transform x in inventory.transform)
         {
 
