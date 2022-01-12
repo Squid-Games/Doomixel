@@ -75,3 +75,4 @@ crashlytics-build.properties
 .idea/
 .vscode/
 .vsconfig
+Assets/Saved/SavedData.json

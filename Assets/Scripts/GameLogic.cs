@@ -87,6 +87,7 @@ public class GameLogic : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("Game started");
         surfaces = navMesh.GetComponents<NavMeshSurface>();
         AssignPlayer();
         _roomsList = new LinkedList<Room>();

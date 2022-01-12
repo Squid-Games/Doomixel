@@ -28,7 +28,7 @@ public class LeaderBoard : MonoBehaviour
             if (score > maxScore)
                 maxScore = score;
             
-            ScrollContent.GetComponent<RectTransform>().sizeDelta += new Vector2(0, 100);
+            ScrollContent.GetComponent<RectTransform>().sizeDelta += new Vector2(0, 130);
         }
         HighScoreText.text = string.Format("{0:000000}", maxScore);
     }
