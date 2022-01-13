@@ -129,12 +129,14 @@ public class GameLogic : MonoBehaviour
         gamePaused = true;
         Time.timeScale = 0f;
         pauseMenuComponent.SetActive(true);
+        SoundManagerScript.PauseMusic();
     }
     
     public void GameOver()
     {
         Cursor.lockState = CursorLockMode.None;
         gameOverMenuComponent.SetActive(true);
+        SoundManagerScript.PauseMusic();
     }
 
     public void ContinueGame()
@@ -143,6 +145,7 @@ public class GameLogic : MonoBehaviour
         gamePaused = false;
         Time.timeScale = 1f;
         pauseMenuComponent.SetActive(false);
+        SoundManagerScript.PlayMusic();
     }
 
     public void ExitGame()
