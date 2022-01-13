@@ -160,7 +160,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackCooldown: 4
-  attackRadius: 5
+  shooter: 0
+  bulletSpeed: 10
+  bullet: {fileID: 0}
+  attackRadius: 1
   waypointPositions: []
   maxWalkTilesRange: 15
   minPathLength: 3
