@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,6 +15,12 @@ public class EnemyAI : MonoBehaviour
     
     // Attack
     public float attackCooldown;
+    // Enemy Bullet
+    public bool shooter = false;
+    public float bulletSpeed = 10.0f;
+    public GameObject bullet = null;
+    private Vector3 velocity = Vector3.zero;
+    private MonsterFrames _monsterFrames;
     bool attacked;
 
     public float attackRadius;
@@ -31,18 +38,27 @@ public class EnemyAI : MonoBehaviour
     public float rayDistance = 10.0f;
 
     private List<Vector3> _rays = null;
+
+    private GameObject player;
+    private PlayerController playerController;
+
+    private MonsterFrames.MonsterFrame? monsterFrameFront = null;
     
     void Awake()
     {
-        playerTransform = GameObject.Find("Player").transform;
+        player = GameObject.Find("Player");
+        playerController = player.GetComponent<PlayerController>();
+        playerTransform = player.transform;
         agent = GetComponent<NavMeshAgent>();
+        _monsterFrames = GetComponent<MonsterFrames>();
+        setMonsterFrontFrame();
     }
 
     // Update is called once per frame
     void Update()
     {
         playerInSightRange = CheckPlayerInSight(); // use some raycasting using the orientation and radius
-        playerInAttackRange = false; // use some raycasting or euclidian distance (because the enemy is already facing the player)
+        playerInAttackRange = Vector3.Distance(playerTransform.position, this.transform.position) <= attackRadius; // use some raycasting or euclidian distance (because the enemy is already facing the player)
 
         if(!playerInSightRange && !playerInAttackRange)
         { 
@@ -65,6 +81,21 @@ public class EnemyAI : MonoBehaviour
 
         foreach (var ray in _rays)
             Gizmos.DrawLine(transform.position, transform.position + ray * rayDistance);
+    }
+
+    private void setMonsterFrontFrame()
+    {
+        if(_monsterFrames == null) 
+        {
+            return;
+        }
+        foreach(var f in _monsterFrames.frames) 
+        {
+            if(f.isFront)
+            {
+                monsterFrameFront = f;
+            }
+        }
     }
 
     private bool CheckPlayerInSight()
@@ -138,13 +169,33 @@ public class EnemyAI : MonoBehaviour
         agent.SetDestination(playerTransform.position);
     }
 
+    private void shootPlayer()
+    {
+        var bullets = Instantiate(bullet, transform.position, Quaternion.identity);
+        Physics.IgnoreCollision(bullets.GetComponent<Collider>(), GetComponent<Collider>());
+        bullets.GetComponent<Bullets>().velocity = (playerTransform.position - transform.position).normalized * bulletSpeed;
+        if(_monsterFrames != null && monsterFrameFront.HasValue)
+        {
+            GetComponent<MeshRenderer>().material = monsterFrameFront.Value.material;
+        }
+    }
+
+    private void hurtPlayer()
+    {
+        playerController.DecreaseLife();
+    }
+
     private void AttackPlayer() 
     {
         agent.SetDestination(transform.position);
         if(!attacked)
         {
             attacked = true;
-            Debug.Log("attacked");
+            if(shooter) {
+                shootPlayer();
+            } else {
+                hurtPlayer();
+            }
             Invoke(nameof(AttackAgain), attackCooldown);
         }
     }

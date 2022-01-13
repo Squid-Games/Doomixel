@@ -28,8 +28,6 @@ public class Killable : MonoBehaviour
 
         if (other.gameObject.CompareTag("Bullets"))
         {
-
-          //  Debug.Log(other.gameObject.GetComponent<Material>().name);
             DecreaseLife();
             Destroy(other.gameObject);
         }

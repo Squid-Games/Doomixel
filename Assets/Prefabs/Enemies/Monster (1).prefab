@@ -160,7 +160,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a747643ed274af7419bb0e1dd4ba396d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackCooldown: 8
+  attackCooldown: 3
+  shooter: 1
+  bulletSpeed: 10
+  bullet: {fileID: 356066739564174031, guid: 6749d31a73744434192853133f2823a5, type: 3}
   attackRadius: 20
   waypointPositions: []
   maxWalkTilesRange: 15
@@ -184,9 +187,13 @@ MonoBehaviour:
   frames:
   - material: {fileID: 2100000, guid: 44f5e2051becfb747964ca21f37010fd, type: 2}
     direction: {x: 0, y: 0, z: 1}
+    isFront: 1
   - material: {fileID: 2100000, guid: e6af098cbceccc6479fabc03ec950f7e, type: 2}
     direction: {x: 0, y: 0, z: -1}
+    isFront: 0
   - material: {fileID: 2100000, guid: 55ef60f6a4941584b9aecc7dde931615, type: 2}
     direction: {x: -1, y: 0, z: 0}
+    isFront: 0
   - material: {fileID: 2100000, guid: a5d12347bebe64441856cc25d5167370, type: 2}
     direction: {x: 1, y: 0, z: 0}
+    isFront: 0

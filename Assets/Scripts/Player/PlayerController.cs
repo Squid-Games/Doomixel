@@ -28,6 +28,17 @@ public class PlayerController : MonoBehaviour
     
     private float move_delay = 0.0f; 
 
+    public GameObject gameLogicInstance;
+    private GameLogic gameLogic;
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("BulletsEnemy"))
+        {
+            DecreaseLife();
+        }
+    }
+
     float calculateMovePath(float x) {
         return 0.0025f * Mathf.Pow(x, 2);
     }
@@ -37,6 +48,8 @@ public class PlayerController : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
         weapon_origin = weapon.transform.position;
+
+        gameLogic = gameLogicInstance.GetComponent<GameLogic>();
 
         Cursor.lockState = CursorLockMode.Locked;
         _accumulatedShootTime = 0.0f;
@@ -126,10 +139,8 @@ public class PlayerController : MonoBehaviour
         Physics.IgnoreCollision(bullets.GetComponent<Collider>(), _collider);
         bullets.GetComponent<Bullets>().velocity = GetCurrentAngleAxis() * Vector3.forward * bulletSpeed;
 
-
         if (Control.selected_bullet != null)
         {
-
             if (Control.selected_bullet.GetAmmo() >= 1)
             {
                 SoundManagerScript.PlaySound("gunshot");
@@ -163,8 +174,10 @@ public class PlayerController : MonoBehaviour
     public void DecreaseLife()
     {
         lives -= 1;
+        Debug.Log(lives);
         if (lives <= 0)
         {
+            gameLogic.GameOver();
             // TODO: Game over
         }
 

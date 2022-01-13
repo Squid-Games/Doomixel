@@ -10,7 +10,10 @@ public class Bullets : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (!other.gameObject.CompareTag("Bullets") && !other.gameObject.CompareTag("RewardAmmo"))
+        if(gameObject.CompareTag("BulletsEnemy") && (other.gameObject.CompareTag("Human") || other.gameObject.CompareTag("Enemy")))
+            return;
+
+        if (!other.gameObject.CompareTag("Bullets") && !other.gameObject.CompareTag("RewardAmmo") && !other.gameObject.CompareTag("BulletsEnemy"))
             Destroy(gameObject);
 
     }

@@ -11,6 +11,8 @@ TagManager:
   - PauseMenu
   - SceneNavMesh
   - RewardAmmo
+  - Enemy
+  - BulletsEnemy
   layers:
   - Default
   - TransparentFX

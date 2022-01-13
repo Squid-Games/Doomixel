@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SoundManagerScript : MonoBehaviour
 {
-    private const float MUSIC_VOLUME_MULTIPLIER = 0.5f;
+    private const float MUSIC_VOLUME_MULTIPLIER = 0.2f;
 
     public static AudioClip gunshotSound, deathSoundEffect, gunshotEmptySound;
     static AudioSource audioSrc;

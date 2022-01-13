@@ -135,6 +135,8 @@ public class GameLogic : MonoBehaviour
     public void GameOver()
     {
         Cursor.lockState = CursorLockMode.None;
+        gamePaused = true;
+        Time.timeScale = 0f;
         gameOverMenuComponent.SetActive(true);
         SoundManagerScript.PauseMusic();
     }

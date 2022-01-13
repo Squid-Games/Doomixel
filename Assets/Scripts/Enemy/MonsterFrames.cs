@@ -14,6 +14,7 @@ public class MonsterFrames : MonoBehaviour
     {
         public Material material;
         public Vector3 direction;
+        public bool isFront;
     }
 
     public MonsterFrame[] frames;
