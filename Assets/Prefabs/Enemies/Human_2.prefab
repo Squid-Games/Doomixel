@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5901639677228728960}
   - component: {fileID: 5964133724478391061}
   m_Layer: 0
-  m_Name: Human (2)
+  m_Name: Human_2
   m_TagString: Human
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
