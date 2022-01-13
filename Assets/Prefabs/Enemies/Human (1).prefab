@@ -124,7 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10dff6761cad9a04f959e8fd6c744649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lives: 3
+  lives: 6
 --- !u!195 &4411427594636823259
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -159,7 +159,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a747643ed274af7419bb0e1dd4ba396d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkPointRange: 10
   attackCooldown: 4
-  sightRadius: 10
   attackRadius: 5
+  waypointPositions: []
+  maxWalkTilesRange: 15
+  minPathLength: 3
+  maxPathLength: 10
+  raysNumber: 5
+  rayAngle: 10
+  rayDistance: 10

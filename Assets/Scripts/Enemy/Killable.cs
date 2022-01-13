@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Killable : MonoBehaviour
 {
 
     public int lives;
-    private const int maxLives = 3;
+    private int maxLives;
     private GameObject human;
 
     private bool _isDead = false;
@@ -13,7 +14,10 @@ public class Killable : MonoBehaviour
 
     void Start()
     {
-        lives = maxLives;
+        if(lives==0) 
+            lives = 3;
+        maxLives = lives;
+
         human = this.gameObject; 
     }
 
@@ -23,7 +27,9 @@ public class Killable : MonoBehaviour
             return;
 
         if (other.gameObject.CompareTag("Bullets"))
-        { 
+        {
+
+          //  Debug.Log(other.gameObject.GetComponent<Material>().name);
             DecreaseLife();
             Destroy(other.gameObject);
         }
