@@ -13,7 +13,7 @@ public class MoveUpDown : MonoBehaviour
 
             Int32.TryParse(this.transform.GetComponent<MeshRenderer>().material.name.Split()[0].Split('_')[1], out x);
 
-            Control.reward(x);
+            Control.Reward(x);
             Destroy(gameObject);
 
         }

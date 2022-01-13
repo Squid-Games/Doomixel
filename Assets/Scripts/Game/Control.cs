@@ -21,7 +21,7 @@ public class Control : MonoBehaviour
     public static Bullet selected_bullet;
     public static Transform selected_border;
 
-    // Start is called before the first frame update
+
     void Awake()
     {
         bullets = new List<Bullet>();
@@ -34,12 +34,12 @@ public class Control : MonoBehaviour
         slots = new List<Bullet>();
         for (int i = 0; i < NUM_OF_SLOTS; i++)
         {
-            if (i > 2)
+            if (i > 0)
                 slots.Add(null);
             else
             {
                 Bullet aux = bullets[i];
-                aux.ammo = Random.Range(1, 51);
+                aux.ammo =20;
                 slots.Add(aux);
             }
 
@@ -96,8 +96,38 @@ public class Control : MonoBehaviour
         SelectBullet(0);
     }
 
+    public static int AmmoNumber(int ammoID)
+    {
+        switch (ammoID)
+        {
+            case 1:
+                return Random.Range(1, 4);
 
-    public static void reward(int x)
+            case 2:
+                return Random.Range(2, 5);
+
+            case 3:
+                return Random.Range(10, 16);
+
+            case 4:
+                return Random.Range(1, 4);
+                break;
+
+            case 5:
+                return Random.Range(4, 7);
+                
+            case 6:
+                return Random.Range(10, 16);
+               
+            default:
+                return 5;
+               
+        } 
+
+    }
+
+
+    public static void Reward(int x)
     {
 
         int freespace = 7;
@@ -113,7 +143,7 @@ public class Control : MonoBehaviour
             {
                 if (slots[i].id == aux.id)
                 {
-                    slots[i].ammo += Random.Range(1, 31);
+                    slots[i].ammo += AmmoNumber(x);
 
                     slots_view[i].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = slots[i].GetAmmo().ToString("");
                     gasit = true;
@@ -133,7 +163,7 @@ public class Control : MonoBehaviour
         {
 
             slots[freespace] = aux;
-            slots[freespace].ammo = Random.Range(1, 51);
+            slots[freespace].ammo = AmmoNumber(x);
             slots_view[freespace].GetChild(0).GetChild(0).GetComponent<Image>().sprite = slots[freespace].GetImage();
             slots_view[freespace].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = slots[freespace].GetAmmo().ToString("");
             slots_view[freespace].GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
