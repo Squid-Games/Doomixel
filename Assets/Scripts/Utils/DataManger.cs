@@ -38,7 +38,7 @@ public static class DataManager
             string jsonString = File.ReadAllText(_path + "SavedData.json");
             return JsonUtility.FromJson<SavedData>(jsonString);
         }
-        catch (FileNotFoundException e)
+        catch (FileNotFoundException)
         {
             // Debug.Log(e.ToString()); ;))))
         }

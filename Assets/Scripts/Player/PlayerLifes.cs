@@ -11,14 +11,14 @@ public class PlayerLifes : MonoBehaviour
 	
 	void Start()
 	{
-		this._playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+		_playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 	}
 
     void Update()
     {
         for (int i = 0; i < hearts.Length; i++)
         {
-            hearts[i].enabled = i < this._playerController.lives;
+            hearts[i].enabled = i < _playerController.lives;
         }
     }
 }

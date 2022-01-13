@@ -81,13 +81,15 @@ public class GameLogic : MonoBehaviour
 
     private       LinkedList<Room> _roomsList;
     private       Room             _currentRoom;
-    public        static bool             gamePaused = false;
+    public        static bool      gamePaused = false;
     public        GameObject       pauseMenuComponent;
     public        GameObject       gameOverMenuComponent;
 
     void Start()
     {
-        Debug.Log("Game started");
+        gamePaused = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Time.timeScale = 1f;
         surfaces = navMesh.GetComponents<NavMeshSurface>();
         AssignPlayer();
         _roomsList = new LinkedList<Room>();
@@ -100,9 +102,9 @@ public class GameLogic : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (gamePaused)
-                this.ContinueGame();
+                ContinueGame();
             else
-                this.PauseGame();
+                PauseGame();
             return;
         }
         

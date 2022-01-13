@@ -153,18 +153,12 @@ public class PlayerController : MonoBehaviour
         return Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
     }
 
-    public int StartTimer()
-    {
-        if (boolStart == 0) return 0;
-        else return 1;
-    }
-
     public void DecreaseLife()
     {
-        this.lives -= 1;
-        if (this.lives <= 0)
+        lives -= 1;
+        if (lives <= 0)
         {
-            /// TODO: Game over
+            // TODO: Game over
         }
 
     }

@@ -54,6 +54,8 @@ public class ScoreScript : MonoBehaviour
 
     public static void SaveScore()
     {
+        if (_score == 0)
+            return;
         savedData.scoresHistory.Add(_score);
         DataManager.Save(savedData);
         _score = 0;
