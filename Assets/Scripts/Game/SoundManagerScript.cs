@@ -6,7 +6,7 @@ public class SoundManagerScript : MonoBehaviour
 {
     private const float MUSIC_VOLUME_MULTIPLIER = 0.5f;
 
-    public static AudioClip gunshotSound, deathSoundEffect, gunshotEmptySound;
+    public static AudioClip gunshotSound, deathSoundEffect, gunshotEmptySound, rewardSoundEffect;
     static AudioSource audioSrc;
     public GameObject playerObject;
     private static AudioSource _musicSource;
@@ -17,7 +17,8 @@ public class SoundManagerScript : MonoBehaviour
         gunshotSound = Resources.Load<AudioClip>("gunshot");
         gunshotEmptySound = Resources.Load<AudioClip>("gunshot_empty");
         deathSoundEffect = Resources.Load<AudioClip>("deathsound");
-      
+        rewardSoundEffect = Resources.Load<AudioClip>("reward");
+
         audioSrc = GetComponent<AudioSource>();
 
         _musicSource = playerObject.GetComponent<AudioSource>();
@@ -50,7 +51,10 @@ public class SoundManagerScript : MonoBehaviour
 
         else if (clip == "death")
             audioSrc.PlayOneShot(deathSoundEffect);
-       
+
+        else if (clip == "reward")
+            audioSrc.PlayOneShot(rewardSoundEffect);
+
     }
 
 }

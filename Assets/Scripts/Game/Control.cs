@@ -111,7 +111,6 @@ public class Control : MonoBehaviour
 
             case 4:
                 return Random.Range(1, 4);
-                break;
 
             case 5:
                 return Random.Range(4, 7);
@@ -144,7 +143,7 @@ public class Control : MonoBehaviour
                 if (slots[i].id == aux.id)
                 {
                     slots[i].ammo += AmmoNumber(x);
-
+                    SoundManagerScript.PlaySound("reward");
                     slots_view[i].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = slots[i].GetAmmo().ToString("");
                     gasit = true;
                     break;
@@ -164,6 +163,7 @@ public class Control : MonoBehaviour
 
             slots[freespace] = aux;
             slots[freespace].ammo = AmmoNumber(x);
+            SoundManagerScript.PlaySound("reward");
             slots_view[freespace].GetChild(0).GetChild(0).GetComponent<Image>().sprite = slots[freespace].GetImage();
             slots_view[freespace].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = slots[freespace].GetAmmo().ToString("");
             slots_view[freespace].GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
