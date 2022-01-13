@@ -56,6 +56,12 @@ public class Control : MonoBehaviour
         foreach (Transform x in inventory.transform)
         {
 
+            Debug.Log(x.name);
+            Debug.Log(x.GetChild(0).name);
+            Debug.Log(x.GetChild(0).GetChild(0).name);
+            Debug.Log(x.GetChild(0).GetChild(1).name);
+
+
             slots_view.Add(x);
 
 
@@ -63,14 +69,22 @@ public class Control : MonoBehaviour
             if (slots[j] != null)
             {
                 x.GetChild(0).GetChild(0).GetComponent<Image>().sprite = slots[j].GetImage();
-                x.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = slots[j].GetAmmo().ToString("0");
+
+                if(j==0) 
+                    x.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "\u221E";
+                
+                else
+                    x.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = slots[j].GetAmmo().ToString("");
+                x.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color32(185, 20, 238, 255);
             }
             else
             {
 
                 x.GetChild(0).GetChild(0).GetComponent<Image>().sprite = default;
                 x.GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 0);
-                x.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "0";
+                x.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+                x.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color32(185, 20, 238, 255);
+
             }
 
 
@@ -99,9 +113,9 @@ public class Control : MonoBehaviour
             {
                 if (slots[i].id == aux.id)
                 {
-                    slots[i].ammo += Random.Range(1, 51);
+                    slots[i].ammo += Random.Range(1, 31);
 
-                    slots_view[i].GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = slots[i].GetAmmo().ToString("0");
+                    slots_view[i].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = slots[i].GetAmmo().ToString("");
                     gasit = true;
                     break;
                 }
@@ -121,7 +135,7 @@ public class Control : MonoBehaviour
             slots[freespace] = aux;
             slots[freespace].ammo = Random.Range(1, 51);
             slots_view[freespace].GetChild(0).GetChild(0).GetComponent<Image>().sprite = slots[freespace].GetImage();
-            slots_view[freespace].GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = slots[freespace].GetAmmo().ToString("0");
+            slots_view[freespace].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = slots[freespace].GetAmmo().ToString("");
             slots_view[freespace].GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
         }
 
@@ -132,9 +146,11 @@ public class Control : MonoBehaviour
     {
         // bullets[priviousnumber]= selected_bullet 
         selected_border.GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+        selected_border.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color32(185, 20, 238, 255);
+      
 
         slots_view[number].GetChild(0).GetComponent<Image>().color = new Color32(185, 20, 238, 255);
-
+        slots_view[number].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color32(255, 255, 255, 255);
         if (slots[number] == null)
             selected_bullet = null;
 
@@ -147,7 +163,7 @@ public class Control : MonoBehaviour
 
     public void SetEmptySlot(int number)
     {
-
+        selected_border.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
         slots_view[number].GetChild(0).GetChild(0).GetComponent<Image>().sprite = null;
         slots_view[number].GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 0);
         slots[number] = null;

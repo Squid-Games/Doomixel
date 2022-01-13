@@ -133,8 +133,15 @@ public class PlayerController : MonoBehaviour
             if (Control.selected_bullet.GetAmmo() >= 1)
             {
                 SoundManagerScript.PlaySound("gunshot");
-                Control.selected_bullet.ammo -= 1;
-                Control.selected_border.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = Control.selected_bullet.GetAmmo().ToString("0");
+
+                if (Control.selected_bullet.id != 0)
+                {  
+                    Control.selected_bullet.ammo -= 1;
+                    Control.selected_border.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = Control.selected_bullet.GetAmmo().ToString("0");
+                }
+                else
+                    Control.selected_border.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "\u221E";
+               
                 bullets.GetComponent<MeshRenderer>().material = Control.selected_bullet.GetMaterial();
             }
             else 
