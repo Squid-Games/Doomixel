@@ -5,47 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
-
 using Random = UnityEngine.Random;
-
-struct Vector2Int
-{
-    public Vector2Int(int x, int z)
-    {
-        this.x = x;
-        this.z = z;
-    }
-
-    public static Vector2Int operator +(Vector2Int a, Vector2Int b)
-    {
-        a.x += b.x;
-        a.z += b.z;
-        return a;
-    }
-
-    public int x;
-    public int z;
-}
-
-struct RoomTile
-{
-    public Vector2Int Position { get; set; }
-    public GameObject Floor { get; set; }
-    public List<GameObject> Walls { get; set; }
-    public List<Vector2Int> PositionsBehindWalls { get; set; }
-    public GameObject Ceiling { get; set; }
-}
-
-class Room
-{
-    public List<RoomTile> RoomTiles { get; set; }
-    public GameObject ClosedDoor { get; set; }
-    public Vector2Int? ClosedNextTilePosition { get; set; }
-    public GameObject Door { get; set; }
-    public Vector2Int NextTilePosition { get; set; }
-    public Vector2Int DoorPosition { get; set; }
-    public List<GameObject> Enemies { get; set; }
-}
 
 public class GameLogic : MonoBehaviour
 {
@@ -53,41 +13,48 @@ public class GameLogic : MonoBehaviour
     public struct EnemyType
     {
         public GameObject prefab;
-        public float      chance;
+        public float chance;
     }
 
-    private const int              MAX_ROOMS_IN_QUEUE = 3;
-    public        GameObject       playerObject;
-    public        GameObject       floorPrefab;
-    public        GameObject       wallPrefab;
-    public        GameObject       ceilingPrefab;
-                                   
-    public        GameObject       doorPrefab;
-    public        GameObject       closedDoorPrefab;
-                                   
-    public        List<EnemyType>  enemyTypes;
-                                   
-    public        GameObject       navMesh;
-    public        NavMeshSurface[] surfaces;
-                                   
-    public        int              minTilesRoom;
-    public        int              minRoomRectangleWidth;
-    public        int              maxRoomRectangleWidth;
-                                   
-    public        float            roomTileScale = 1.0f;
-    public        float            panelSize = 10.0f;
-                  
-    public        int              enemiesCount;
+    private const int MAX_ROOMS_IN_QUEUE = 3;
+    public GameObject playerObject;
+    public GameObject floorPrefab;
+    public GameObject wallPrefab;
+    public GameObject ceilingPrefab;
 
-    private       LinkedList<Room> _roomsList;
-    private       Room             _currentRoom;
-    public        static bool      gamePaused = false;
-    public        GameObject       pauseMenuComponent;
-    public        GameObject       gameOverMenuComponent;
+    public GameObject doorPrefab;
+    public GameObject closedDoorPrefab;
+
+    public List<EnemyType> enemyTypes;
+
+    public GameObject navMesh;
+    public NavMeshSurface[] surfaces;
+
+    public int minTilesRoom;
+    public int minRoomRectangleWidth;
+    public int maxRoomRectangleWidth;
+
+    public float roomTileScale = 1.0f;
+    public float panelSize = 10.0f;
+
+    public int enemiesCount;
+
+    private LinkedList<Room> _roomsList;
+    private Room _currentRoom;
+    public static bool gamePaused = false;
+    public static bool gameOver = false;
+    public GameObject pauseMenuComponent;
+    public GameObject gameOverMenuComponent;
 
     void Start()
     {
+        Initiate();
+    }
+
+    void Initiate()
+    {
         gamePaused = false;
+        gameOver = false;
         Cursor.lockState = CursorLockMode.Locked;
         Time.timeScale = 1f;
         surfaces = navMesh.GetComponents<NavMeshSurface>();
@@ -101,13 +68,15 @@ public class GameLogic : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (gameOver)
+                return;
             if (gamePaused)
                 ContinueGame();
             else
                 PauseGame();
             return;
         }
-        
+
         if (playerObject is null)
             AssignPlayer();
 
@@ -116,13 +85,14 @@ public class GameLogic : MonoBehaviour
 
         ActivateEnemies();
 
-        if (_roomsList.Last().Door.transform.GetComponentInChildren<Door>().open && _roomsList.Count < MAX_ROOMS_IN_QUEUE)
+        if (_roomsList.Last().Door.transform.GetComponentInChildren<Door>().open &&
+            _roomsList.Count < MAX_ROOMS_IN_QUEUE)
             _roomsList.AddLast(CreateRoom(_roomsList.Last()));
 
         UpdateDeadEnemies();
         UpdateCurrentRoom();
     }
-    
+
     public void PauseGame()
     {
         Cursor.lockState = CursorLockMode.None;
@@ -131,11 +101,17 @@ public class GameLogic : MonoBehaviour
         pauseMenuComponent.SetActive(true);
         SoundManagerScript.PauseMusic();
     }
-    
+
+    public void NewGame()
+    {
+        // Reload current scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     public void GameOver()
     {
         Cursor.lockState = CursorLockMode.None;
-        gamePaused = true;
+        gameOver = true;
         Time.timeScale = 0f;
         gameOverMenuComponent.SetActive(true);
         SoundManagerScript.PauseMusic();
@@ -158,12 +134,12 @@ public class GameLogic : MonoBehaviour
 
     private void ActivateEnemies()
     {
-        foreach(var room in _roomsList)
+        foreach (var room in _roomsList)
         {
-            foreach(var enemy in room.Enemies)
+            foreach (var enemy in room.Enemies)
             {
                 var navMeshAgent = enemy.GetComponent<NavMeshAgent>();
-                if(navMeshAgent != null && !navMeshAgent.enabled)
+                if (navMeshAgent != null && !navMeshAgent.enabled)
                 {
                     navMeshAgent.enabled = true;
                 }
@@ -173,7 +149,7 @@ public class GameLogic : MonoBehaviour
 
     private void BuildNavMeshSurfaces()
     {
-        foreach(NavMeshSurface surface in surfaces)
+        foreach (NavMeshSurface surface in surfaces)
         {
             surface.BuildNavMesh();
         }
@@ -194,10 +170,11 @@ public class GameLogic : MonoBehaviour
         {
             bool changeRoom = false;
 
-            Vector3 currentPlayerTile = new Vector3((playerObject.transform.position.x) / (panelSize * roomTileScale), 
+            Vector3 currentPlayerTile = new Vector3((playerObject.transform.position.x) / (panelSize * roomTileScale),
                 0.0f,
                 (playerObject.transform.position.z) / (panelSize * roomTileScale));
-            Vector2Int playerTilePos = new Vector2Int((int)Math.Round(currentPlayerTile.x), (int)Math.Round(currentPlayerTile.z));
+            Vector2Int playerTilePos = new Vector2Int((int) Math.Round(currentPlayerTile.x),
+                (int) Math.Round(currentPlayerTile.z));
             foreach (var tile in nextRoom.RoomTiles)
             {
                 if (nextRoom.ClosedNextTilePosition.HasValue)
@@ -253,7 +230,7 @@ public class GameLogic : MonoBehaviour
                 origin = chosenTiles.ElementAt(Random.Range(0, chosenTiles.Count));
 
             Vector2Int rectSize = new Vector2Int(Random.Range(minRoomRectangleWidth, maxRoomRectangleWidth + 1),
-                                                 Random.Range(minRoomRectangleWidth, maxRoomRectangleWidth + 1));
+                Random.Range(minRoomRectangleWidth, maxRoomRectangleWidth + 1));
 
             Vector2Int pointsDifference = rectSize + new Vector2Int(-1, -1);
 
@@ -282,12 +259,14 @@ public class GameLogic : MonoBehaviour
                         if (!chosenTiles.Contains(newPoint))
                         {
                             foreach (var room in _roomsList)
-                                if (room.RoomTiles.FindAll(x => x.Position.x == newPoint.x && x.Position.z == newPoint.z).Count > 0)
+                                if (room.RoomTiles
+                                    .FindAll(x => x.Position.x == newPoint.x && x.Position.z == newPoint.z).Count > 0)
                                     canAddRectangle = false;
                         }
                     }
                 }
             }
+
             if (canAddRectangle)
             {
                 for (int x = origin.x; x <= topRight.x; x++)
@@ -305,18 +284,18 @@ public class GameLogic : MonoBehaviour
         foreach (var tile in chosenTiles)
         {
             var floor = Instantiate(floorPrefab);
-            floor.transform.position = new Vector3(tile.x * panelSize * roomTileScale, 
+            floor.transform.position = new Vector3(tile.x * panelSize * roomTileScale,
                 0.0f,
                 tile.z * panelSize * roomTileScale);
             floor.transform.localScale = new Vector3(roomTileScale, 1.0f, roomTileScale);
-            
+
             var ceiling = Instantiate(ceilingPrefab);
             ceiling.transform.position = new Vector3(floor.transform.position.x, 0.0f, floor.transform.position.z);
-            
+
             var actualCeiling = ceiling.transform.GetChild(0);
             actualCeiling.transform.localScale = new Vector3(roomTileScale, 1.0f, roomTileScale);
-            actualCeiling.transform.localPosition = new Vector3(actualCeiling.transform.localPosition.x, 
-                actualCeiling.transform.localPosition.y * roomTileScale, 
+            actualCeiling.transform.localPosition = new Vector3(actualCeiling.transform.localPosition.x,
+                actualCeiling.transform.localPosition.y * roomTileScale,
                 actualCeiling.transform.localPosition.z);
 
             var roomTile = new RoomTile()
@@ -359,7 +338,7 @@ public class GameLogic : MonoBehaviour
 
                 var roomTile = Random.Range(0, room.RoomTiles.Count);
                 var tile = room.RoomTiles[roomTile];
-                
+
                 if (exists)
                 {
                     while (tile.Walls.Count != 0)
@@ -369,10 +348,11 @@ public class GameLogic : MonoBehaviour
                     }
                 }
 
-                enemyObject.transform.position = new Vector3(tile.Floor.transform.position.x, 1.0f, tile.Floor.transform.position.z);
+                enemyObject.transform.position = new Vector3(tile.Floor.transform.position.x, 1.0f,
+                    tile.Floor.transform.position.z);
                 SetEnemyWaypoints(enemyObject, tile, room);
                 room.Enemies.Add(enemyObject);
-             }
+            }
         }
     }
 
@@ -392,8 +372,8 @@ public class GameLogic : MonoBehaviour
             {
                 var currentPosition = visitedPositions[listIndex++];
 
-                int[] dx = { 0, -1, 0, 1 };
-                int[] dz = { -1, 0, 1, 0 };
+                int[] dx = {0, -1, 0, 1};
+                int[] dz = {-1, 0, 1, 0};
 
                 for (int i = 0; i < dx.Length; i++)
                 {
@@ -402,7 +382,8 @@ public class GameLogic : MonoBehaviour
                     {
                         if (room.RoomTiles.Any(x => x.Position.x == nextPos.x && x.Position.z == nextPos.z))
                         {
-                            var roomTile = room.RoomTiles.Find(x => x.Position.x == nextPos.x && x.Position.z == nextPos.z);
+                            var roomTile = room.RoomTiles.Find(x =>
+                                x.Position.x == nextPos.x && x.Position.z == nextPos.z);
                             if (roomTile.Walls.Count == 0)
                             {
                                 visitedPositions.Add(nextPos);
@@ -413,7 +394,8 @@ public class GameLogic : MonoBehaviour
                 }
             }
 
-            int waypointsCount = Math.Min(Random.Range(enemyAi.minPathLength, enemyAi.maxPathLength + 1), visitedPositions.Count);
+            int waypointsCount = Math.Min(Random.Range(enemyAi.minPathLength, enemyAi.maxPathLength + 1),
+                visitedPositions.Count);
             for (int i = 0; i < visitedPositions.Count; i++)
             {
                 int otherIx = Random.Range(0, visitedPositions.Count);
@@ -425,8 +407,9 @@ public class GameLogic : MonoBehaviour
             visitedPositions.RemoveRange(waypointsCount, visitedPositions.Count - waypointsCount);
             Vector3[] actualPositions = new Vector3[visitedPositions.Count];
             for (int i = 0; i < visitedPositions.Count; i++)
-                actualPositions[i] = new Vector3(visitedPositions[i].x * panelSize * roomTileScale, 0.0f, visitedPositions[i].z * panelSize * roomTileScale);
-            
+                actualPositions[i] = new Vector3(visitedPositions[i].x * panelSize * roomTileScale, 0.0f,
+                    visitedPositions[i].z * panelSize * roomTileScale);
+
             enemyAi.waypointPositions = actualPositions;
         }
     }
@@ -438,7 +421,7 @@ public class GameLogic : MonoBehaviour
             chancesSum += enemyType.chance;
 
         float chosenPoint = Random.Range(0.0f, chancesSum);
-        
+
         float accumulated = 0.0f;
 
         foreach (var enemyType in enemyTypes)
@@ -453,8 +436,8 @@ public class GameLogic : MonoBehaviour
 
     private bool Lee(Vector2Int nextDoorPosition)
     {
-        Queue<Vector2Int>   testPositions  = new Queue<Vector2Int>();
-        HashSet<Vector2Int> goodPositions  = new HashSet<Vector2Int>();
+        Queue<Vector2Int> testPositions = new Queue<Vector2Int>();
+        HashSet<Vector2Int> goodPositions = new HashSet<Vector2Int>();
         HashSet<Vector2Int> triedPositions = new HashSet<Vector2Int>();
 
         testPositions.Enqueue(nextDoorPosition);
@@ -473,8 +456,8 @@ public class GameLogic : MonoBehaviour
             {
                 goodPositions.Add(currentPosition);
 
-                int[] dx = { 0, -1, 0, 1 };
-                int[] dz = { -1, 0, 1, 0 };
+                int[] dx = {0, -1, 0, 1};
+                int[] dz = {-1, 0, 1, 0};
 
                 for (int i = 0; i < dx.Length; i++)
                 {
@@ -501,8 +484,8 @@ public class GameLogic : MonoBehaviour
 
         foreach (var tile in room.RoomTiles)
         {
-            int[] dx = { 0, -1, 0, 1 };
-            int[] dz = { -1, 0, 1, 0 };
+            int[] dx = {0, -1, 0, 1};
+            int[] dz = {-1, 0, 1, 0};
 
             for (int i = 0; i < dx.Length; i++)
             {
@@ -514,9 +497,9 @@ public class GameLogic : MonoBehaviour
                     closedDoor = false;
                 }
                 else if (previousRoom.DoorPosition.x == nextPos.x &&
-                        previousRoom.DoorPosition.z == nextPos.z &&
-                        tile.Position.x == previousRoom.NextTilePosition.x &&
-                        tile.Position.z == previousRoom.NextTilePosition.z)
+                         previousRoom.DoorPosition.z == nextPos.z &&
+                         tile.Position.x == previousRoom.NextTilePosition.x &&
+                         tile.Position.z == previousRoom.NextTilePosition.z)
                 {
                     closedDoor = true;
                 }
@@ -538,7 +521,8 @@ public class GameLogic : MonoBehaviour
                     {
                         room.ClosedDoor = wallObject;
                         room.ClosedNextTilePosition = tile.Position;
-                        actualWall.transform.localPosition = actualWall.transform.localPosition + new Vector3(0.0f, panelSize * roomTileScale * 2.0f, 0.0f);
+                        actualWall.transform.localPosition = actualWall.transform.localPosition +
+                                                             new Vector3(0.0f, panelSize * roomTileScale * 2.0f, 0.0f);
                         actualWall.GetComponent<ClosedDoor>().panelSize = panelSize;
                         actualWall.GetComponent<ClosedDoor>().tileScale = roomTileScale;
                     }
@@ -558,7 +542,7 @@ public class GameLogic : MonoBehaviour
 
         while (chosenWall == room.ClosedDoor || !validDoor)
         {
-            index = Random.Range(0, addedWalls.Count); 
+            index = Random.Range(0, addedWalls.Count);
             chosenWall = addedWalls[index];
             chosenWallPosition = addedWallsPositions[index];
             validDoor = Lee(chosenWallPosition);
@@ -584,7 +568,7 @@ public class GameLogic : MonoBehaviour
                     actualDoor.GetComponent<Door>().panelSize = panelSize;
                     //if (previousRoom == null)
                     //    actualDoor.GetComponent<Door>().Open();
-                    
+
                     Destroy(tile.Walls[i]);
 
                     tile.Walls[i] = doorObject;
@@ -607,7 +591,7 @@ public class GameLogic : MonoBehaviour
         }
 
         UpdateDeadEnemies();
-        
+
         foreach (var tile in room.RoomTiles)
         {
             Destroy(tile.Floor);
@@ -618,6 +602,7 @@ public class GameLogic : MonoBehaviour
             tile.Walls.Clear();
             tile.PositionsBehindWalls.Clear();
         }
+
         room.RoomTiles.Clear();
         room.Door = null;
         room.ClosedDoor = null;
@@ -627,15 +612,15 @@ public class GameLogic : MonoBehaviour
     {
         HashSet<GameObject> toRemove = new HashSet<GameObject>();
         foreach (var room in _roomsList)
-            foreach (var enemy in room.Enemies)
+        foreach (var enemy in room.Enemies)
+        {
+            var killable = enemy.GetComponent<Killable>();
+            if (killable != null)
             {
-                var killable = enemy.GetComponent<Killable>();
-                if (killable != null)
-                {
-                    if (killable.IsDead())
-                        toRemove.Add(enemy);
-                }
+                if (killable.IsDead())
+                    toRemove.Add(enemy);
             }
+        }
 
         foreach (var room in _roomsList)
             room.Enemies.RemoveAll(x => toRemove.Contains(x));
