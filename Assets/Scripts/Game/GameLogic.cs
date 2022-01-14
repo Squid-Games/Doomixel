@@ -58,6 +58,7 @@ public class GameLogic : MonoBehaviour
         gamePaused = false;
         gameOver = false;
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         Time.timeScale = 1f;
         surfaces = navMesh.GetComponents<NavMeshSurface>();
         AssignPlayer();
@@ -107,7 +108,6 @@ public class GameLogic : MonoBehaviour
 
     public void NewGame()
     {
-        // Reload current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -124,6 +124,7 @@ public class GameLogic : MonoBehaviour
     public void ContinueGame()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         gamePaused = false;
         Time.timeScale = 1f;
         pauseMenuComponent.SetActive(false);
