@@ -15,11 +15,11 @@ public class Killable : MonoBehaviour
     void Start()
     {
         if((int)Settings.GetDifficulty()==1)
-            lives = 3;
-        else if((int)Settings.GetDifficulty()==2)
             lives = 4;
-        else if((int)Settings.GetDifficulty()==3)
+        else if((int)Settings.GetDifficulty()==2)
             lives = 5;
+        else if((int)Settings.GetDifficulty()==3)
+            lives = 6;
         maxLives = lives;
         SetMaxHealth(lives);
         human = gameObject;
@@ -34,7 +34,6 @@ public class Killable : MonoBehaviour
     public void SetHealth(int health)
     {
         slider.value = health;
-
     }
 
     void OnTriggerEnter(Collider other)
@@ -48,7 +47,7 @@ public class Killable : MonoBehaviour
 
             Int32.TryParse(other.gameObject.GetComponent<MeshRenderer>().material.name.Split()[0].Split('_')[1], out aux);
           
-            Decrease(aux, this.name.Split('(')[0]);
+            Decrease(aux, name.Split('(')[0]);
             if(aux!=1)
                 Destroy(other.gameObject);
         }
@@ -59,11 +58,10 @@ public class Killable : MonoBehaviour
 
     void Decrease(int bulletIndex, string enemyName)
     {
-
         if(bulletIndex == 0)
             DecreaseLife(1);
         else if (bulletIndex == 1)
-            DecreaseLife(5);
+            DecreaseLife(maxLives);
         else if (bulletIndex == 2 && enemyName.Equals("Human_1"))
             DecreaseLife(maxLives);
         else if (bulletIndex == 3)

@@ -53,6 +53,11 @@ public class PlayerController : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         _accumulatedShootTime = 0.0f;
+        
+        if ((int) Settings.GetDifficulty() == 2)
+            timeToShootBullet += 0.1f;
+        else if ((int) Settings.GetDifficulty() == 3)
+            timeToShootBullet += 0.2f;
     }
 
     void Update()
