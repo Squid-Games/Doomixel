@@ -85,22 +85,22 @@ public class Control : MonoBehaviour
         switch (ammoID)
         {
             case 1:
-                return Random.Range(1, 4);
+                return Random.Range(1, 3) * (int)Settings.GetDifficulty();
 
             case 2:
-                return Random.Range(2, 5);
+                return Random.Range(2, 4) * (int)Settings.GetDifficulty();
 
             case 3:
-                return Random.Range(10, 16);
+                return Random.Range(2, 5) * (int)Settings.GetDifficulty();
 
             case 4:
-                return Random.Range(1, 4);
+                return Random.Range(1, 4) * (int)Settings.GetDifficulty();
 
             case 5:
-                return Random.Range(4, 7);
+                return Random.Range(2, 5) * (int)Settings.GetDifficulty();
                 
             case 6:
-                return Random.Range(10, 16);
+                return Random.Range(1, 4) * (int)Settings.GetDifficulty();
                
             default:
                 return 5;
