@@ -213,6 +213,7 @@ public class Control : MonoBehaviour
                 }
             }
         }
+
         if (!GameLogic.gamePaused)
         {
             if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
@@ -220,11 +221,13 @@ public class Control : MonoBehaviour
                 x = Modulo((x + 1), NUM_OF_SLOTS);
                 SelectBullet(x);
             }
+
             if (Input.GetAxis("Mouse ScrollWheel") < 0f) // forward
             {
                 x = Modulo((x - 1), NUM_OF_SLOTS);
                 SelectBullet(x);
             }
+
             for (int i = 0; i < NUM_OF_SLOTS; i++)
             {
                 if (Input.GetKeyDown(numericKeyCodes[i]))

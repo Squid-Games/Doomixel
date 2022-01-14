@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +44,15 @@ public class EnemyAI : MonoBehaviour
     private PlayerController playerController;
 
     private MonsterFrames.MonsterFrame? monsterFrameFront = null;
-    
+
+    private void Start()
+    {
+        if ((int) Settings.GetDifficulty() == 2)
+            attackCooldown -= 1;
+        else if ((int) Settings.GetDifficulty() == 3)
+            attackCooldown -= 2;
+    }
+
     void Awake()
     {
         player = GameObject.Find("Player");
