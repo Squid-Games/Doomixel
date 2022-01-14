@@ -48,6 +48,8 @@ public class GameLogic : MonoBehaviour
     public GameObject pauseMenuComponent;
     public GameObject gameOverMenuComponent;
 
+    public Material[] doorMaterials;
+
     void Start()
     {
         Initiate();
@@ -531,6 +533,7 @@ public class GameLogic : MonoBehaviour
                                                              new Vector3(0.0f, panelSize * roomTileScale * 2.0f, 0.0f);
                         actualWall.GetComponent<ClosedDoor>().panelSize = panelSize;
                         actualWall.GetComponent<ClosedDoor>().tileScale = roomTileScale;
+                        actualWall.GetComponent<MeshRenderer>().material = previousRoom.Door.GetComponentInChildren<MeshRenderer>().sharedMaterial;
                     }
 
                     tile.Walls.Add(wallObject);
@@ -572,6 +575,7 @@ public class GameLogic : MonoBehaviour
 
                     actualDoor.GetComponent<Door>().roomTileScale = roomTileScale;
                     actualDoor.GetComponent<Door>().panelSize = panelSize;
+                    actualDoor.GetComponent<MeshRenderer>().material = doorMaterials[Random.Range(0, doorMaterials.Length)];
                     //if (previousRoom == null)
                     //    actualDoor.GetComponent<Door>().Open();
 
