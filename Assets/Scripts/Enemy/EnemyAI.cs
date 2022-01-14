@@ -212,5 +212,6 @@ public class EnemyAI : MonoBehaviour
     private void AttackAgain()
     {
         attacked = false;
+        Debug.Log("attacked");
     }
 }

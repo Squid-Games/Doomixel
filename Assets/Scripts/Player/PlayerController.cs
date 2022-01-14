@@ -31,6 +31,10 @@ public class PlayerController : MonoBehaviour
     public GameObject gameLogicInstance;
     private GameLogic gameLogic;
 
+    private const float IMMUNITY_DURATION = 2.0f;
+    private bool immune = false;
+    private float flicker_interval = 0.15f;
+
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("BulletsEnemy"))
@@ -84,7 +88,6 @@ public class PlayerController : MonoBehaviour
                 _accumulatedShootTime -= timeToShootBullet;
             }
         }
-
     }
 
     void MoveWeapon() {
@@ -176,10 +179,28 @@ public class PlayerController : MonoBehaviour
         return Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
     }
 
+    private void DisableImmunity()
+    {
+        immune = false;
+        weapon.SetActive(true);
+        CancelInvoke("WeaponFlicker");
+    }
+
+    private void WeaponFlicker()
+    {
+        weapon.SetActive(!weapon.activeSelf);
+    }
+
     public void DecreaseLife()
     {
-        lives -= 1;
-        if (lives <= 0)
-            gameLogic.GameOver();
+        if(!immune)
+        {
+            lives -= 1;
+            immune = true;
+            InvokeRepeating("WeaponFlicker", 0, flicker_interval);
+            Invoke("DisableImmunity", IMMUNITY_DURATION);
+            if (lives <= 0)
+                gameLogic.GameOver();
+        }
     }
 }

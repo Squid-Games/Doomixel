@@ -465,6 +465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lives: 6
+  maxLives: 0
   slider: {fileID: 953121570113295270}
 --- !u!195 &4411427594636823259
 NavMeshAgent:
@@ -504,7 +505,7 @@ MonoBehaviour:
   shooter: 0
   bulletSpeed: 10
   bullet: {fileID: 0}
-  attackRadius: 1
+  attackRadius: 1.6
   waypointPositions: []
   maxWalkTilesRange: 15
   minPathLength: 3
