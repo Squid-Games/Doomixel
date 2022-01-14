@@ -54,7 +54,10 @@ public class Killable : MonoBehaviour
 
     }
 
-
+    private void Update()
+    {
+        transform.position = new Vector3(transform.position.x, 1.0f, transform.position.z);
+    }
 
     void Decrease(int bulletIndex, string enemyName)
     {

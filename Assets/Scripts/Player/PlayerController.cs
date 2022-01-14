@@ -166,11 +166,13 @@ public class PlayerController : MonoBehaviour
             else 
             { 
                 bullets.GetComponent<MeshRenderer>().material = null;
+                Debug.Log("DAfaq?");
             }
         }
         else 
         { 
             bullets.GetComponent<MeshRenderer>().material = null;
+            Debug.Log("Dafaq2?");
         }
     }
 
