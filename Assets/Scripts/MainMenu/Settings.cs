@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,15 +25,18 @@ public class Settings : MonoBehaviour
         difficultySlider.value = GetDifficulty();
     }
 
-    public void SaveSettings()
+    public void SaveDifficulty()
     {
-        PlayerPrefs.SetFloat("Volume", soundSlider.value);
         PlayerPrefs.SetFloat("GameDifficulty", difficultySlider.value);
-        
-        // Update sound volume in real time
+        PlayerPrefs.Save();
+    }
+
+    public void SaveVolume(float value)
+    {
+        if (value == 1)
+            return;
+        PlayerPrefs.SetFloat("Volume", soundSlider.value);
         MainMenu.musicSource.volume = MainMenu.MUSIC_VOLUME_MULTIPLIER * GetSoundVolume();
-        
-        // Save Settings
         PlayerPrefs.Save();
     }
     
