@@ -3,11 +3,9 @@ using UnityEngine;
 public class Bullets : MonoBehaviour
 {
     private const float DISTANCE_TO_DESPAWN = 100.0f;
-
-    public Vector3 velocity = Vector3.zero;
-
-    private float _distanceInAir;
     
+    public Vector3 velocity = Vector3.zero;
+    private float _distanceInAir;
     private GameLogic _gameLogic;
 
     void GenerateSpark()

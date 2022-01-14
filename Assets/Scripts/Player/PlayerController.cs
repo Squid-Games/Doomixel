@@ -4,8 +4,9 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     private const float MIN_MOVEMENT_BIAS = 0.01f;
+    private const float MAX_SWING_VAL = 40.0f;
 
-    public float mouseSensivity = 300.0f;
+    public float mouseSensitivity = 300.0f;
     public float movementSpeed = 10.0f;
     public float timeToShootBullet = 0.1f;
     public float bulletSpeed = 25.0f;
@@ -20,13 +21,12 @@ public class PlayerController : MonoBehaviour
 
     public int boolStart = 0;
     public GameObject weapon;
-    private Vector3 weapon_origin;
-    private float weapon_pos = 0.0f;
-    private const float MAX_SWING_VAL = 40.0f;
-    private int swing_orientation = -1;
-    private float swing_speed = 150.0f;
+    private Vector3 weaponOrigin;
+    private float weaponPos = 0.0f;
+    private int swingOrientation = -1;
+    private float swingSpeed = 150.0f;
     
-    private float move_delay = 0.0f; 
+    private float moveDelay = 0.0f; 
 
     public GameObject gameLogicInstance;
     private GameLogic gameLogic;
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
-        weapon_origin = weapon.transform.position;
+        weaponOrigin = weapon.transform.position;
 
         gameLogic = gameLogicInstance.GetComponent<GameLogic>();
 
@@ -61,13 +61,13 @@ public class PlayerController : MonoBehaviour
             return;
         
         var diffMouseX = Input.GetAxis("Mouse X");
-        transform.Rotate(new Vector3(0.0f, diffMouseX * mouseSensivity, 0.0f) * Time.deltaTime);
+        transform.Rotate(new Vector3(0.0f, diffMouseX * mouseSensitivity, 0.0f) * Time.deltaTime);
 
         if (Input.GetButton("Fire1"))
         {
-            weapon.transform.position = weapon_origin;
-            move_delay = 0.25f;
-            weapon_pos = 0.0f;
+            weapon.transform.position = weaponOrigin;
+            moveDelay = 0.25f;
+            weaponPos = 0.0f;
             boolStart = 1;
 
             _accumulatedShootTime += Time.deltaTime;
@@ -83,16 +83,16 @@ public class PlayerController : MonoBehaviour
     }
 
     void MoveWeapon() {
-        float new_pos_y = calculateMovePath(weapon_pos);
-        var posVector = new Vector3(weapon_pos, new_pos_y, 0.0f);
+        float new_pos_y = calculateMovePath(weaponPos);
+        var posVector = new Vector3(weaponPos, new_pos_y, 0.0f);
 
-        weapon_pos += swing_speed * swing_orientation * Time.deltaTime;
-        if(Mathf.Abs(weapon_pos) > MAX_SWING_VAL) {
-            weapon_pos = MAX_SWING_VAL * swing_orientation;
-            swing_orientation *= -1;
+        weaponPos += swingSpeed * swingOrientation * Time.deltaTime;
+        if(Mathf.Abs(weaponPos) > MAX_SWING_VAL) {
+            weaponPos = MAX_SWING_VAL * swingOrientation;
+            swingOrientation *= -1;
         }
 
-        weapon.transform.position = weapon_origin + posVector;
+        weapon.transform.position = weaponOrigin + posVector;
     }
 
     void FixedUpdate()
@@ -113,13 +113,13 @@ public class PlayerController : MonoBehaviour
         var rotatedVector = GetCurrentAngleAxis() * inputVector;
 
         _rigidbody.velocity = rotatedVector * movementSpeed;
-        if(move_delay == 0)
+        if(moveDelay == 0)
         {
             MoveWeapon();
         }
         else
         {
-            move_delay = Mathf.Max(0.0f, move_delay - Time.deltaTime);
+            moveDelay = Mathf.Max(0.0f, moveDelay - Time.deltaTime);
         }
         
     }
@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour
         if (bulletsPrefab is null)
             return;
 
-        if (Control.selected_bullet is null)
+        if (Control.selectedBullet is null)
         {
             SoundManagerScript.PlaySound("gunshot_empty");
             return;
@@ -139,21 +139,21 @@ public class PlayerController : MonoBehaviour
         Physics.IgnoreCollision(bullets.GetComponent<Collider>(), _collider);
         bullets.GetComponent<Bullets>().velocity = GetCurrentAngleAxis() * Vector3.forward * bulletSpeed;
 
-        if (Control.selected_bullet != null)
+        if (Control.selectedBullet != null)
         {
-            if (Control.selected_bullet.GetAmmo() >= 1)
+            if (Control.selectedBullet.GetAmmo() >= 1)
             {
                 SoundManagerScript.PlaySound("gunshot");
 
-                if (Control.selected_bullet.id != 0)
+                if (Control.selectedBullet.id != 0)
                 {  
-                    Control.selected_bullet.ammo -= 1;
-                    Control.selected_border.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = Control.selected_bullet.GetAmmo().ToString("0");
+                    Control.selectedBullet.ammo -= 1;
+                    Control.selectedBorder.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = Control.selectedBullet.GetAmmo().ToString("0");
                 }
                 else
-                    Control.selected_border.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "\u221E";
+                    Control.selectedBorder.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "\u221E";
                
-                bullets.GetComponent<MeshRenderer>().material = Control.selected_bullet.GetMaterial();
+                bullets.GetComponent<MeshRenderer>().material = Control.selectedBullet.GetMaterial();
             }
             else 
             { 
