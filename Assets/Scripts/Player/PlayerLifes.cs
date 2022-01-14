@@ -4,10 +4,8 @@ using UnityEngine.UI;
 public class PlayerLifes : MonoBehaviour
 {
     public Image[] hearts;
-    public Sprite fullHeart;
-    public Sprite emptyHeart;
 
-	private PlayerController _playerController;
+    private PlayerController _playerController;
 	
 	void Start()
 	{

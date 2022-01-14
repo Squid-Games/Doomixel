@@ -8,39 +8,32 @@ public class Control : MonoBehaviour
     private int x = 0;
     private const int NUM_OF_SLOTS = 6; //6-1
 
-    static List<Bullet> bullets = new List<Bullet>();
-    static List<Bullet> slots = new List<Bullet>();
-
-
-
-
-    static List<Transform> slots_view = new List<Transform>();
-
+    private static List<Bullet> _bullets = new List<Bullet>();
+    private static List<Bullet> _slots = new List<Bullet>();
+    private static List<Transform> _slotsView = new List<Transform>();
     private GameObject inventory;
-
-    public static Bullet selected_bullet;
-    public static Transform selected_border;
-
-
+    public static Bullet selectedBullet;
+    public static Transform selectedBorder;
+    
     void Awake()
     {
-        bullets = new List<Bullet>();
+        _bullets = new List<Bullet>();
         for (int i = 0; i < 7; i++)
         {
             Bullet slot1 = new Bullet(i, 25.0f, 0.1f, Resources.Load<Material>("Materials/Bullets/Bullets_" + i), Resources.Load<Sprite>("Bullets/Bullets_" + i), 0);
-            bullets.Add(slot1);
+            _bullets.Add(slot1);
         }
 
-        slots = new List<Bullet>();
+        _slots = new List<Bullet>();
         for (int i = 0; i < NUM_OF_SLOTS; i++)
         {
             if (i > 0)
-                slots.Add(null);
+                _slots.Add(null);
             else
             {
-                Bullet aux = bullets[i];
+                Bullet aux = _bullets[i];
                 aux.ammo =20;
-                slots.Add(aux);
+                _slots.Add(aux);
             }
 
         }
@@ -52,20 +45,20 @@ public class Control : MonoBehaviour
         }
 
         int j = 0;
-        slots_view = new List<Transform>();
+        _slotsView = new List<Transform>();
         foreach (Transform x in inventory.transform)
         {
-            slots_view.Add(x);
+            _slotsView.Add(x);
             x.GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-            if (slots[j] != null)
+            if (_slots[j] != null)
             {
-                x.GetChild(0).GetChild(0).GetComponent<Image>().sprite = slots[j].GetImage();
+                x.GetChild(0).GetChild(0).GetComponent<Image>().sprite = _slots[j].GetImage();
 
                 if(j==0) 
                     x.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "\u221E";
                 
                 else
-                    x.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = slots[j].GetAmmo().ToString("");
+                    x.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = _slots[j].GetAmmo().ToString("");
                 x.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color32(185, 20, 238, 255);
             }
             else
@@ -82,8 +75,8 @@ public class Control : MonoBehaviour
             j++;
         }
 
-        selected_border = slots_view[0];
-        selected_bullet = slots[0];
+        selectedBorder = _slotsView[0];
+        selectedBullet = _slots[0];
         SelectBullet(0);
     }
 
@@ -123,24 +116,24 @@ public class Control : MonoBehaviour
         int freespace = 7;
 
 
-        Bullet aux = bullets[x];
+        Bullet aux = _bullets[x];
 
         bool isfull = true;
         bool gasit = false;
         for (int i = 0; i <= 5; i++)
         {
-            if (slots[i] != null)
+            if (_slots[i] != null)
             {
-                if (slots[i].id == aux.id)
+                if (_slots[i].id == aux.id)
                 {
-                    slots[i].ammo += AmmoNumber(x);
+                    _slots[i].ammo += AmmoNumber(x);
                     SoundManagerScript.PlaySound("reward");
-                    slots_view[i].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = slots[i].GetAmmo().ToString("");
+                    _slotsView[i].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = _slots[i].GetAmmo().ToString("");
                     gasit = true;
                     break;
                 }
             }
-            else if (slots[i] == null && isfull == true)
+            else if (_slots[i] == null && isfull == true)
             {
                 isfull = false;
                 freespace = i;
@@ -152,12 +145,12 @@ public class Control : MonoBehaviour
         if (isfull == false && gasit == false)
         {
 
-            slots[freespace] = aux;
-            slots[freespace].ammo = AmmoNumber(x);
+            _slots[freespace] = aux;
+            _slots[freespace].ammo = AmmoNumber(x);
             SoundManagerScript.PlaySound("reward");
-            slots_view[freespace].GetChild(0).GetChild(0).GetComponent<Image>().sprite = slots[freespace].GetImage();
-            slots_view[freespace].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = slots[freespace].GetAmmo().ToString("");
-            slots_view[freespace].GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            _slotsView[freespace].GetChild(0).GetChild(0).GetComponent<Image>().sprite = _slots[freespace].GetImage();
+            _slotsView[freespace].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = _slots[freespace].GetAmmo().ToString("");
+            _slotsView[freespace].GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
         }
 
     }
@@ -166,28 +159,28 @@ public class Control : MonoBehaviour
     public void SelectBullet(int number)
     {
         // bullets[priviousnumber]= selected_bullet 
-        selected_border.GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-        selected_border.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color32(185, 20, 238, 255);
+        selectedBorder.GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+        selectedBorder.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color32(185, 20, 238, 255);
       
 
-        slots_view[number].GetChild(0).GetComponent<Image>().color = new Color32(185, 20, 238, 255);
-        slots_view[number].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color32(255, 255, 255, 255);
-        if (slots[number] == null)
-            selected_bullet = null;
+        _slotsView[number].GetChild(0).GetComponent<Image>().color = new Color32(185, 20, 238, 255);
+        _slotsView[number].GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color32(255, 255, 255, 255);
+        if (_slots[number] == null)
+            selectedBullet = null;
 
         else
-            selected_bullet = slots[number];
+            selectedBullet = _slots[number];
 
-        selected_border = slots_view[number];
+        selectedBorder = _slotsView[number];
 
     }
 
     public void SetEmptySlot(int number)
     {
-        selected_border.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
-        slots_view[number].GetChild(0).GetChild(0).GetComponent<Image>().sprite = null;
-        slots_view[number].GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 0);
-        slots[number] = null;
+        selectedBorder.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+        _slotsView[number].GetChild(0).GetChild(0).GetComponent<Image>().sprite = null;
+        _slotsView[number].GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 0);
+        _slots[number] = null;
     }
 
     private KeyCode[] numericKeyCodes = {
@@ -201,9 +194,9 @@ public class Control : MonoBehaviour
 
     void Update()
     {
-        if (selected_bullet != null)
+        if (selectedBullet != null)
         {
-            if (selected_bullet.ammo <= 0)
+            if (selectedBullet.ammo <= 0)
             {
 
                 SetEmptySlot(x);

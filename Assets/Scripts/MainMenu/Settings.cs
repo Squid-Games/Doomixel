@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class Settings : MonoBehaviour
 {
     public Slider soundSlider;
+    public Slider difficultySlider;
 
     public static float GetSoundVolume()
     {
@@ -11,16 +12,28 @@ public class Settings : MonoBehaviour
             return PlayerPrefs.GetFloat("Volume");
         return 1;
     }
+    public static float GetDifficulty()
+    {
+        if(PlayerPrefs.HasKey("GameDifficulty"))
+            return PlayerPrefs.GetFloat("GameDifficulty");
+        return 1;
+    }
     void Start()
     {
         soundSlider.value = GetSoundVolume();
+        difficultySlider.value = GetDifficulty();
     }
 
-    public void UpdateSoundVolume(float val)
+    public void SaveSettings()
     {
-        if (val == 1)
-            return;
-        PlayerPrefs.SetFloat("Volume", val);
+        PlayerPrefs.SetFloat("Volume", soundSlider.value);
+        PlayerPrefs.SetFloat("GameDifficulty", difficultySlider.value);
+        
+        // Update sound volume in real time
+        MainMenu.musicSource.volume = MainMenu.MUSIC_VOLUME_MULTIPLIER * GetSoundVolume();
+        
+        // Save Settings
         PlayerPrefs.Save();
     }
+    
 }

@@ -19,10 +19,13 @@ public class Killable : MonoBehaviour
 
     void Start()
     {
-
-        if (lives == 0)
+        if((int)Settings.GetDifficulty()==1)
             lives = 3;
-       
+        else if((int)Settings.GetDifficulty()==2)
+            lives = 4;
+        else if((int)Settings.GetDifficulty()==3)
+            lives = 5;
+        maxLives = lives;
         SetMaxHealth(lives);
         human = this.gameObject;
     }
@@ -61,37 +64,27 @@ public class Killable : MonoBehaviour
 
     void Decrease(int bulletIndex, string enemyName)
     {
-        
+
         if (bulletIndex == 0)
             DecreaseLife(1);
-
         else if (bulletIndex == 1)
-            DecreaseLife(5); 
-
+            DecreaseLife(5);
         else if (bulletIndex == 2 && enemyName.Equals("Human_1"))
             DecreaseLife(6);
-
         else if (bulletIndex == 3)
             DecreaseLife(2);
-
         else if (bulletIndex == 4)
-        { 
-          
-            this.gameObject.GetComponent<NavMeshAgent>().speed=2f;
-            this.gameObject.GetComponent<NavMeshAgent>().acceleration = 6f;
-
+        {
+            gameObject.GetComponent<NavMeshAgent>().speed=2f;
+            gameObject.GetComponent<NavMeshAgent>().acceleration = 6f;
         }
         else if (bulletIndex == 5 && enemyName.Equals("Human_2"))
             DecreaseLife(4);
-
         else if (bulletIndex == 6)
             DecreaseLife(1);
 
         else
             DecreaseLife(1);
-
-
-
     }
 
 

@@ -11,7 +11,6 @@ public class SoundManagerScript : MonoBehaviour
     public GameObject playerObject;
     private static AudioSource _musicSource;
 
-    // Start is called before the first frame update
     void Start()
     {
         gunshotSound = Resources.Load<AudioClip>("gunshot");
@@ -23,11 +22,6 @@ public class SoundManagerScript : MonoBehaviour
 
         _musicSource = playerObject.GetComponent<AudioSource>();
         _musicSource.volume = MUSIC_VOLUME_MULTIPLIER * Settings.GetSoundVolume();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     public static void PauseMusic()
