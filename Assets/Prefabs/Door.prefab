@@ -92,7 +92,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4c905fa7e681c9c49885e1b9aa9b6373, type: 2}
+  - {fileID: 2100000, guid: a6945e97842191743b6459ead1316fde, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -143,3 +143,4 @@ MonoBehaviour:
   open: 0
   openSpeed: 2
   roomTileScale: 1
+  panelSize: 1
