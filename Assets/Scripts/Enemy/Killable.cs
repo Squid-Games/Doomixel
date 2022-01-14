@@ -1,26 +1,42 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using System;
 
 public class Killable : MonoBehaviour
 {
 
     public int lives;
-    private int maxLives;
-    private GameObject human;
 
+    private GameObject human;
 
     private bool _isDead = false;
 
     public bool IsDead() => _isDead;
 
+    public Slider slider;
+
+
     void Start()
     {
+
         if (lives == 0)
             lives = 3;
-        maxLives = lives;
-
+       
+        SetMaxHealth(lives);
         human = this.gameObject;
+    }
+
+    public void SetMaxHealth(int health)
+    {
+        slider.maxValue = health;
+        slider.value = health;
+    }
+
+    public void SetHealth(int health)
+    {
+        slider.value = health;
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -41,16 +57,11 @@ public class Killable : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-        human.GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1, 1.0f / maxLives * lives);
-    }
+
 
     void Decrease(int bulletIndex, string enemyName)
     {
-        Debug.Log(bulletIndex);
-        Debug.Log(enemyName);
-
+        
         if (bulletIndex == 0)
             DecreaseLife(1);
 
@@ -69,13 +80,12 @@ public class Killable : MonoBehaviour
             this.gameObject.GetComponent<NavMeshAgent>().speed=2f;
             this.gameObject.GetComponent<NavMeshAgent>().acceleration = 6f;
 
-
         }
         else if (bulletIndex == 5 && enemyName.Equals("Human_2"))
             DecreaseLife(4);
 
         else if (bulletIndex == 6)
-            DecreaseLife(1);//fire
+            DecreaseLife(1);
 
         else
             DecreaseLife(1);
@@ -88,6 +98,11 @@ public class Killable : MonoBehaviour
     void DecreaseLife(int number)
     {
         lives = lives - number;
+        if (lives < 0)
+            SetHealth(0);
+        else 
+            SetHealth(lives);
+        
         if (lives <= 0)
             Kill();
     }
