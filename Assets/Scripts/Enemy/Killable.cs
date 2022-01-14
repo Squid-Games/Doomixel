@@ -17,9 +17,9 @@ public class Killable : MonoBehaviour
         if((int)Settings.GetDifficulty()==1)
             lives = 4;
         else if((int)Settings.GetDifficulty()==2)
-            lives = 5;
-        else if((int)Settings.GetDifficulty()==3)
             lives = 6;
+        else if((int)Settings.GetDifficulty()==3)
+            lives = 8;
         maxLives = lives;
         SetMaxHealth(lives);
         human = gameObject;
