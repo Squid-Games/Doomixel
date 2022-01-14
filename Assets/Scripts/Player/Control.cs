@@ -55,16 +55,7 @@ public class Control : MonoBehaviour
         slots_view = new List<Transform>();
         foreach (Transform x in inventory.transform)
         {
-
-            Debug.Log(x.name);
-            Debug.Log(x.GetChild(0).name);
-            Debug.Log(x.GetChild(0).GetChild(0).name);
-            Debug.Log(x.GetChild(0).GetChild(1).name);
-
-
             slots_view.Add(x);
-
-
             x.GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255);
             if (slots[j] != null)
             {

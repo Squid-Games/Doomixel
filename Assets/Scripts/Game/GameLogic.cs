@@ -21,6 +21,8 @@ public class GameLogic : MonoBehaviour
     public GameObject floorPrefab;
     public GameObject wallPrefab;
     public GameObject ceilingPrefab;
+    public GameObject sparkPrefab;
+    public GameObject bloodPrefab;
 
     public GameObject doorPrefab;
     public GameObject closedDoorPrefab;
@@ -96,6 +98,7 @@ public class GameLogic : MonoBehaviour
     public void PauseGame()
     {
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         gamePaused = true;
         Time.timeScale = 0f;
         pauseMenuComponent.SetActive(true);
@@ -111,6 +114,7 @@ public class GameLogic : MonoBehaviour
     public void GameOver()
     {
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         gameOver = true;
         Time.timeScale = 0f;
         gameOverMenuComponent.SetActive(true);
@@ -512,6 +516,7 @@ public class GameLogic : MonoBehaviour
                     wallObject.transform.rotation = Quaternion.Euler(0.0f, i * 90.0f, 0.0f);
 
                     var actualWall = wallObject.transform.GetChild(0);
+                    actualWall.transform.tag = closedDoor ? "Door" : "Wall";
                     actualWall.transform.localScale = new Vector3(roomTileScale, 1.0f, roomTileScale);
                     actualWall.transform.localPosition = new Vector3(actualWall.transform.localPosition.x,
                         actualWall.transform.localPosition.y * roomTileScale,

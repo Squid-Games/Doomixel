@@ -174,11 +174,7 @@ public class PlayerController : MonoBehaviour
     public void DecreaseLife()
     {
         lives -= 1;
-        Debug.Log(lives);
         if (lives <= 0)
-        {
             gameLogic.GameOver();
-        }
-
     }
 }

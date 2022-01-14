@@ -13,6 +13,8 @@ TagManager:
   - RewardAmmo
   - Enemy
   - BulletsEnemy
+  - Wall
+  - Door
   layers:
   - Default
   - TransparentFX

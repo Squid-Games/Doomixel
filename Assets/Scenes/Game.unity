@@ -1058,6 +1058,8 @@ MonoBehaviour:
   floorPrefab: {fileID: 1245834850054319982, guid: 97ceafc8afdcab446907246e9348e475, type: 3}
   wallPrefab: {fileID: 7273243746947651028, guid: d0bca889960e8f547bdf9844cf227c3b, type: 3}
   ceilingPrefab: {fileID: 3790116756741820355, guid: dac85fc6210c51446bb43567a6e7154b, type: 3}
+  sparkPrefab: {fileID: 197494, guid: 8af7fc23449fb134587debd98a00604a, type: 3}
+  bloodPrefab: {fileID: 1000013355911406, guid: d32aa916f50cac94db11e6f19821a58f, type: 3}
   doorPrefab: {fileID: 2593951892208515104, guid: b42c9571c9dce0c4da5bd18f2c3df322, type: 3}
   closedDoorPrefab: {fileID: 6774790917506190831, guid: 13ded0f6e648c5f46b2f703a07cd9976, type: 3}
   enemyTypes:
