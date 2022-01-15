@@ -24,10 +24,10 @@ Doomixel este un joc first-person shooter, de tip pseudo-3D, asemenea primelor j
 
 ### Înainte să începi jocul
 Jucătorul este întâmpinat de un meniu de început care prezintă mai multe opțiuni.
-* $Play:$ Opțiunea care va trimite jucătorul în scenă pentru a putea parcurge jocul
-* $Leaderboard:$ Jucătorul își poate vizualiza progresul dintre runde în secțiunea de Leaderboard. Aici va putea vedea scorul acumulat, în ordine, de la prima rundă jucată, până la ultima. Deasupra va apărea highscore-ul, unde va putea vedea care este scorul maxim obținut. Informațiile despre sesiunile anterioare vor fi salvate într-un fișier local.
-* $Options:$ Jucătorul va fi întâmpinat de un submeniu de unde va putea să seteze dificultatea dorită (între easy, medium și hard) și volumul jocului
-* $Quit:$ Jucătorul poate să părăsească jocul
+* Play: Opțiunea care va trimite jucătorul în scenă pentru a putea parcurge jocul
+* Leaderboard: Jucătorul își poate vizualiza progresul dintre runde în secțiunea de Leaderboard. Aici va putea vedea scorul acumulat, în ordine, de la prima rundă jucată, până la ultima. Deasupra va apărea highscore-ul, unde va putea vedea care este scorul maxim obținut. Informațiile despre sesiunile anterioare vor fi salvate într-un fișier local.
+* Options: Jucătorul va fi întâmpinat de un submeniu de unde va putea să seteze dificultatea dorită (între easy, medium și hard) și volumul jocului
+* Quit: Jucătorul poate să părăsească jocul
 
 ### În timpul jocului
 Jucătorul este întâmpinat de melodia de fundal a jocului în momentul în care va începe o nouă sesiune. Acesta poate să dea pauză jocului folosind tasta Escape, fiind astfel întâmpinat de meniul de pauză. Prezența acestui meniu face ca scena să se opreasă și îi oferă jucătorului opțiunea să se întoarcă în sesiune sau să termine sesiunea actuală și să se întoarcă în meniul principal, salvând astfel și scorul sesiunii în leaderboard.
@@ -43,10 +43,10 @@ Referitor la game flow, prin alegerea unei dificultăți mai avansate se vor în
 
 ### Tipurile de inamici
 Jocul prezintă 4 tipuri de inamici: 2 de tip uman, care atacă de la apropiere, și 2 de alt tip (monstru/turetă), care atacă de la distanță, folosind gloanțe specifice lor. Fiecare dintre inamici are câte o particularizare care îl face unic:
-* $Male Human:$ Acesta este un inamic care atacă de la apropiere, astfel că va încerca să se apropie de player pentru a îl putea răni.
-* $Female Human:$ Acesta este un inamic asemănător celui precedent, însă cu o viteză și o rază de atac mai mari.
-* $Turret:$ Acest inamic este unul staționar care trage cu gloanțe în player. Datorită faptului că nu se poate mișca, raza lui de atac este foarte mare, atacând cu gloanțe în momentul în care detectează player-ul.
-* $FlyingMonster:$ Acest inamic este asemănător celui precedent, însă ce îl face special este că se poate mișca, având și acesta o rază de vizibilitate foarte mare. Dintre toți inamicii, acesta este cel mai special, deoarece, în funcție de direcția în care se mișcă, își va schimba înfățișarea pentru a arăta acest lucru (vom putea vedea monstrul din mai multe unghiuri: laterale, față - spate).
+* Male Human: Acesta este un inamic care atacă de la apropiere, astfel că va încerca să se apropie de player pentru a îl putea răni.
+* Female Human: Acesta este un inamic asemănător celui precedent, însă cu o viteză și o rază de atac mai mari.
+* Turret: Acest inamic este unul staționar care trage cu gloanțe în player. Datorită faptului că nu se poate mișca, raza lui de atac este foarte mare, atacând cu gloanțe în momentul în care detectează player-ul.
+* FlyingMonster: Acest inamic este asemănător celui precedent, însă ce îl face special este că se poate mișca, având și acesta o rază de vizibilitate foarte mare. Dintre toți inamicii, acesta este cel mai special, deoarece, în funcție de direcția în care se mișcă, își va schimba înfățișarea pentru a arăta acest lucru (vom putea vedea monstrul din mai multe unghiuri: laterale, față - spate).
 
 ### Detalii tehnice inamici
 Inamicii din joc au 3 state-uri:
@@ -55,12 +55,12 @@ Inamicii din joc au 3 state-uri:
 * $Attack:$ Odată ce player-ul este în raza de atac, inamicul va încerca să îl rănească, fie fizic, fie de la distanță, folosind niște bile de energie roșii. Fiecare inamic, indiferent de tip, are un cooldown pentru atacuri, astfel că în intervalul în care nu atacă, player-ul nu va fi rănit de ei.
 
 Logica și comportamentul inamicilor sunt realizate folosind două elemente cheie: nav mesh și raycasting.
-* $Nav mesh$: 
+* Nav mesh: 
 > inamicii au fiecare caracteristicile lor, dar în principal există inamici de tip Human și inamici de tip Monster. Human sunt Nav Mesh Agents care ocupă puțin spațiu și se mișcă repede. Monster sunt Nav Mesh Agents care ocupă mult spațiu, iar logica lor ține mai mult de state, nu de stopping distance sau alte caracteristici ale agentului.
 
 > în ceea ce privește nav mesh surface-ul. Odată ce o cameră este generată, asupra ei va fi aplicat un nav mesh, care va avea câte o suprafață diferită pentru fiecare tip de agent (human/monster). După ce suprafața s-a generat, nav mesh agentul va fi și el activat, astfel încât să se poată folosi de nav mesh pentru a se putea orienta prin scenă.
 
-* $Raycasting$:
+* Raycasting:
 > Fiecare inamic are un fascicul de raze pe care îl proiectează în direcția în care privește. Dacă player-ul intersetează aceste raze la o anumită distanță, state-ul lui va fi schimbat în cel de Engage.
 
 ### Diferite tipuri de muniție
