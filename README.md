@@ -4,8 +4,8 @@
  - [Darius Buhai](https://github.com/DariusBuhai)
  - [Silviu Stăncioiu](https://github.com/SilviuShader)
  - [Dabu Alexandru](https://github.com/DabuAlexandru)
- - [Ana](https://github.com/anayep)
- - [Stefan](https://github.com/svk-svk)
+ - [Ana Maria Ungureanu](https://github.com/anayep)
+ - [Stefan Gradinaru](https://github.com/svk-svk)
 
 ## Project Description
 In this game you can fight against AI driven people on a random generated 3D map.
