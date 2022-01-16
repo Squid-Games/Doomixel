@@ -1,16 +1,13 @@
 # Doomixel
 
-## Team Members:
+## Membrii Echipă:
  - [Darius Buhai](https://github.com/DariusBuhai)
  - [Silviu Stăncioiu](https://github.com/SilviuShader)
  - [Dabu Alexandru](https://github.com/DabuAlexandru)
  - [Ana Maria Ungureanu](https://github.com/anayep)
  - [Stefan Gradinaru](https://github.com/svk-svk)
 
-## Project Description
-In this game you can fight against AI driven people on a random generated 3D map.
-
-## Project Requirements:
+## Cerințe proiect:
 
 - Proiect în echipe de aproximativ 5-6 oameni.
 - Task - conceperea si implementarea unui joc demonstrativ de orice natură dar care să poată rula pe PC sub Windows 10 sau cele mai recente variante de Ubuntu sau MacOS.
