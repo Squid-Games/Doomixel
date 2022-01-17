@@ -115,6 +115,7 @@ public class GameLogic : MonoBehaviour
 
     public void GameOver()
     {
+        ScoreScript.SaveScore();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         gameOver = true;
